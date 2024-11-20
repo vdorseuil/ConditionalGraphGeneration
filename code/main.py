@@ -175,9 +175,9 @@ if args.train_autoencoder:
             torch.save({
                 'state_dict': autoencoder.state_dict(),
                 'optimizer' : optimizer.state_dict(),
-            }, 'autoencoder.pth.tar')
+            }, './models/autoencoder.pth.tar')
 else:
-    checkpoint = torch.load('autoencoder.pth.tar')
+    checkpoint = torch.load('./models/autoencoder.pth.tar')
     autoencoder.load_state_dict(checkpoint['state_dict'])
 
 autoencoder.eval()
@@ -245,9 +245,9 @@ if args.train_denoiser:
             torch.save({
                 'state_dict': denoise_model.state_dict(),
                 'optimizer' : optimizer.state_dict(),
-            }, 'denoise_model.pth.tar')
+            }, './models/denoise_model.pth.tar')
 else:
-    checkpoint = torch.load('denoise_model.pth.tar')
+    checkpoint = torch.load('./models/denoise_model.pth.tar')
     denoise_model.load_state_dict(checkpoint['state_dict'])
 
 denoise_model.eval()
@@ -255,7 +255,7 @@ denoise_model.eval()
 del train_loader, val_loader
 
 # Save to a CSV file
-with open("output.csv", "w", newline="") as csvfile:
+with open("outputs/output.csv", "w", newline="") as csvfile:
     writer = csv.writer(csvfile)
     # Write the header
     writer.writerow(["graph_id", "edge_list"])
