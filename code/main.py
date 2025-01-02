@@ -27,6 +27,8 @@ from autoencoder import VariationalAutoEncoder
 from denoise_model import DenoiseNN, p_losses, sample
 from utils import linear_beta_schedule, construct_nx_from_adj, preprocess_dataset
 from sklearn.metrics import mean_absolute_error
+from scipy.stats import zscore
+
 
 
 
@@ -121,6 +123,38 @@ train_loader = DataLoader(trainset, batch_size=args.batch_size, shuffle=True)
 val_loader = DataLoader(validset, batch_size=args.batch_size, shuffle=False)
 test_loader = DataLoader(testset, batch_size=args.batch_size, shuffle=False)
 
+# Statistics
+def graph_statistics(G):
+    num_nodes = G.number_of_nodes()
+    num_edges = G.number_of_edges()
+    average_degree = sum(dict(G.degree()).values()) / num_nodes
+    num_triangles = sum(nx.triangles(G).values()) // 3
+    global_clustering_coefficient = nx.transitivity(G)
+    k_core = nx.k_core(G)
+    max_k_core = max(k_core.nodes())
+    partition = community_louvain.best_partition(G)
+    num_communities = len(set(partition.values()))
+
+    # Return the results in a list
+    return [
+        num_nodes,
+        num_edges,
+        average_degree,
+        num_triangles,
+        global_clustering_coefficient,
+        max_k_core,
+        num_communities
+    ]
+
+# Custom loss
+def custom_loss_fn(target_stats, generated_stats, weights):
+    """
+    Custom loss function to penalize deviations in graph statistics.
+    """
+    loss = 0
+    for key, weight in weights.items():
+        loss += weight * torch.abs(target_stats[key] - generated_stats[key])
+    return loss
 
 # initialize VGAE model
 autoencoder = VariationalAutoEncoder(args.spectral_emb_dim+1, args.hidden_dim_encoder, args.hidden_dim_decoder, args.latent_dim, args.n_layers_encoder, args.n_layers_decoder, args.n_max_nodes).to(device)
@@ -152,7 +186,7 @@ if args.train_autoencoder:
             train_loss_all += loss.item()
             train_count += torch.max(data.batch)+1
             optimizer.step()
-
+            
         autoencoder.eval()
         val_loss_all = 0
         val_count = 0
@@ -260,33 +294,7 @@ denoise_model.eval()
 del train_loader
 
 
-# MSE on test set
-
-def graph_statistics(G):
-    num_nodes = G.number_of_nodes()
-    num_edges = G.number_of_edges()
-    average_degree = sum(dict(G.degree()).values()) / num_nodes
-    num_triangles = sum(nx.triangles(G).values()) // 3
-    global_clustering_coefficient = nx.transitivity(G)
-    k_core = nx.k_core(G)
-    max_k_core = max(k_core.nodes())
-    partition = community_louvain.best_partition(G)
-    num_communities = len(set(partition.values()))
-
-    # Return the results in a list
-    return [
-        num_nodes,
-        num_edges,
-        average_degree,
-        num_triangles,
-        global_clustering_coefficient,
-        max_k_core,
-        num_communities
-    ]
-
-
-
-
+# MAE on test set
 mae = 0.
 
 # Save to a CSV file
@@ -316,7 +324,7 @@ with open("outputs/output.csv", "w", newline="") as csvfile:
 
             generated_stats  = np.array(graph_statistics(Gs_generated))
 
-            mae += mean_absolute_error(stat_x, generated_stats)
+            mae += mean_absolute_error(zscore(stat_x), zscore(generated_stats))
 
             # Define a graph ID
             graph_id = graph_ids[i]
