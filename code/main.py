@@ -7,6 +7,8 @@ import pickle
 import shutil
 import csv
 import ast
+import community as community_louvain
+
 
 import scipy.sparse as sparse
 from tqdm import tqdm
@@ -24,6 +26,8 @@ from torch_geometric.loader import DataLoader
 from autoencoder import VariationalAutoEncoder
 from denoise_model import DenoiseNN, p_losses, sample
 from utils import linear_beta_schedule, construct_nx_from_adj, preprocess_dataset
+from sklearn.metrics import mean_absolute_error
+
 
 
 from torch.utils.data import Subset
@@ -90,10 +94,10 @@ parser.add_argument('--hidden-dim-denoise', type=int, default=512, help="Hidden 
 parser.add_argument('--n-layers_denoise', type=int, default=3, help="Number of layers in the denoising model (default: 3)")
 
 # Flag to toggle training of the autoencoder (VGAE)
-parser.add_argument('--train-autoencoder', action='store_false', default=True, help="Flag to enable/disable autoencoder (VGAE) training (default: enabled)")
+parser.add_argument('--train-autoencoder', action='store_true', default=False, help="Flag to enable/disable autoencoder (VGAE) training (default: enabled)")
 
 # Flag to toggle training of the diffusion-based denoising model
-parser.add_argument('--train-denoiser', action='store_true', default=True, help="Flag to enable/disable denoiser training (default: enabled)")
+parser.add_argument('--train-denoiser', action='store_true', default=False, help="Flag to enable/disable denoiser training (default: enabled)")
 
 # Dimensionality of conditioning vectors for conditional generation
 parser.add_argument('--dim-condition', type=int, default=128, help="Dimensionality of conditioning vectors for conditional generation (default: 128)")
@@ -120,6 +124,7 @@ test_loader = DataLoader(testset, batch_size=args.batch_size, shuffle=False)
 
 # initialize VGAE model
 autoencoder = VariationalAutoEncoder(args.spectral_emb_dim+1, args.hidden_dim_encoder, args.hidden_dim_decoder, args.latent_dim, args.n_layers_encoder, args.n_layers_decoder, args.n_max_nodes).to(device)
+
 
 optimizer = torch.optim.Adam(autoencoder.parameters(), lr=args.lr)
 scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=500, gamma=0.1)
@@ -252,7 +257,37 @@ else:
 
 denoise_model.eval()
 
-del train_loader, val_loader
+del train_loader
+
+
+# MSE on test set
+
+def graph_statistics(G):
+    num_nodes = G.number_of_nodes()
+    num_edges = G.number_of_edges()
+    average_degree = sum(dict(G.degree()).values()) / num_nodes
+    num_triangles = sum(nx.triangles(G).values()) // 3
+    global_clustering_coefficient = nx.transitivity(G)
+    k_core = nx.k_core(G)
+    max_k_core = max(k_core.nodes())
+    partition = community_louvain.best_partition(G)
+    num_communities = len(set(partition.values()))
+
+    # Return the results in a list
+    return [
+        num_nodes,
+        num_edges,
+        average_degree,
+        num_triangles,
+        global_clustering_coefficient,
+        max_k_core,
+        num_communities
+    ]
+
+
+
+
+mae = 0.
 
 # Save to a CSV file
 with open("outputs/output.csv", "w", newline="") as csvfile:
@@ -271,13 +306,17 @@ with open("outputs/output.csv", "w", newline="") as csvfile:
         x_sample = samples[-1]
         adj = autoencoder.decode_mu(x_sample)
         stat_d = torch.reshape(stat, (-1, args.n_condition))
-
+    
 
         for i in range(stat.size(0)):
             stat_x = stat_d[i]
 
             Gs_generated = construct_nx_from_adj(adj[i,:,:].detach().cpu().numpy())
             stat_x = stat_x.detach().cpu().numpy()
+
+            generated_stats  = np.array(graph_statistics(Gs_generated))
+
+            mae += mean_absolute_error(stat_x, generated_stats)
 
             # Define a graph ID
             graph_id = graph_ids[i]
@@ -286,3 +325,5 @@ with open("outputs/output.csv", "w", newline="") as csvfile:
             edge_list_text = ", ".join([f"({u}, {v})" for u, v in Gs_generated.edges()])           
             # Write the graph ID and the full edge list as a single row
             writer.writerow([graph_id, edge_list_text])
+
+print(f"Mean square error : {mae/1000}")
