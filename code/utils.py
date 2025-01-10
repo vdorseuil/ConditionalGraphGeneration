@@ -20,6 +20,27 @@ from torch_geometric.data import Data
 
 from extract_feats import extract_feats, extract_numbers
 
+def graph_statistics(G):
+    num_nodes = G.number_of_nodes()
+    num_edges = G.number_of_edges()
+    average_degree = sum(dict(G.degree()).values()) / num_nodes
+    num_triangles = sum(nx.triangles(G).values()) // 3
+    global_clustering_coefficient = nx.transitivity(G)
+    k_core = nx.k_core(G)
+    max_k_core = max(k_core.nodes())
+    partition = community_louvain.best_partition(G)
+    num_communities = len(set(partition.values()))
+
+    # Return the results in a list
+    return [
+        num_nodes,
+        num_edges,
+        average_degree,
+        num_triangles,
+        global_clustering_coefficient,
+        max_k_core,
+        num_communities
+    ]
 
 
 def preprocess_dataset(dataset, n_max_nodes, spectral_emb_dim):

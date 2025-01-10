@@ -92,6 +92,7 @@ class DenoiseNN(nn.Module):
         cond = torch.nan_to_num(cond, nan=-100.0)
         cond = self.cond_mlp(cond)
         t = self.time_mlp(t)
+        print(x.shape, cond.shape)
         for i in range(self.n_layers-1):
             x = torch.cat((x, cond), dim=1)
             x = self.relu(self.mlp[i](x))+t

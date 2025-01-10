@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from torch_geometric.nn import GINConv
+from torch_geometric.nn import GINConv, GCNConv
 from torch_geometric.nn import global_add_pool
 
 # Decoder
@@ -33,8 +33,35 @@ class Decoder(nn.Module):
         adj = adj + torch.transpose(adj, 1, 2)
         return adj
 
+#Encoder 
+# class GCN(torch.nn.Module):
+#     def __init__(self, input_dim, hidden_dim, latent_dim, n_layers, dropout=0.2):
+#         super().__init__()
+#         self.dropout = dropout
+        
+#         self.convs = torch.nn.ModuleList()
+#         self.convs.append(GCNConv(input_dim, hidden_dim))
+#         for layer in range(n_layers-1):
+#             self.convs.append(GCNConv(hidden_dim, hidden_dim))
 
+#         self.bn = nn.BatchNorm1d(hidden_dim)
+#         self.fc = nn.Linear(hidden_dim, latent_dim)
+        
 
+#     def forward(self, data):
+#         edge_index = data.edge_index
+#         x = data.x
+
+#         for conv in self.convs:
+#             x = conv(x, edge_index)
+#             x = F.relu(x)
+#             x = F.dropout(x, self.dropout, training=self.training)
+
+#         out = global_add_pool(x, data.batch)
+#         out = self.bn(out)
+#         out = self.fc(out)
+#         return out
+    
 
 class GIN(torch.nn.Module):
     def __init__(self, input_dim, hidden_dim, latent_dim, n_layers, dropout=0.2):
@@ -57,7 +84,8 @@ class GIN(torch.nn.Module):
                             )) 
 
         self.bn = nn.BatchNorm1d(hidden_dim)
-        self.fc = nn.Linear(hidden_dim, latent_dim)
+        self.mu = nn.Linear(hidden_dim, latent_dim)
+        self.logvar = nn.Linear(hidden_dim, latent_dim)
         
 
     def forward(self, data):
@@ -70,8 +98,9 @@ class GIN(torch.nn.Module):
 
         out = global_add_pool(x, data.batch)
         out = self.bn(out)
-        out = self.fc(out)
-        return out
+        mu = self.mu(out)
+        logvar = self.logvar(out)
+        return mu, logvar
 
 
 # Variational Autoencoder
@@ -80,23 +109,17 @@ class VariationalAutoEncoder(nn.Module):
         super(VariationalAutoEncoder, self).__init__()
         self.n_max_nodes = n_max_nodes
         self.input_dim = input_dim
-        self.encoder = GIN(input_dim, hidden_dim_enc, hidden_dim_enc, n_layers_enc)
-        self.fc_mu = nn.Linear(hidden_dim_enc, latent_dim)
-        self.fc_logvar = nn.Linear(hidden_dim_enc, latent_dim)
+        self.encoder = GIN(input_dim, hidden_dim_enc, latent_dim, n_layers_enc)
         self.decoder = Decoder(latent_dim, hidden_dim_dec, n_layers_dec, n_max_nodes)
 
     def forward(self, data):
-        x_g = self.encoder(data)
-        mu = self.fc_mu(x_g)
-        logvar = self.fc_logvar(x_g)
+        mu, logvar = self.encoder(data)
         x_g = self.reparameterize(mu, logvar)
         adj = self.decoder(x_g)
         return adj
 
     def encode(self, data):
-        x_g = self.encoder(data)
-        mu = self.fc_mu(x_g)
-        logvar = self.fc_logvar(x_g)
+        mu, logvar = self.encoder(data)
         x_g = self.reparameterize(mu, logvar)
         return x_g
 
@@ -118,14 +141,14 @@ class VariationalAutoEncoder(nn.Module):
        return adj
 
     def loss_function(self, data, beta=0.05):
-        x_g  = self.encoder(data)
-        mu = self.fc_mu(x_g)
-        logvar = self.fc_logvar(x_g)
+        mu, logvar  = self.encoder(data)
+
         x_g = self.reparameterize(mu, logvar)
         adj = self.decoder(x_g)
         
-        recon = F.l1_loss(adj, data.A, reduction='mean')
+        recon = F.l1_loss(adj, data.A, reduction='sum')
         kld = -0.5 * torch.sum(1 + logvar - mu.pow(2) - logvar.exp())
+        
         loss = recon + beta*kld
 
         return loss, recon, kld

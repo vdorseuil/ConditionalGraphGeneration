@@ -117,15 +117,18 @@ class VariationalAutoEncoder(nn.Module):
        adj = self.decoder(mu)
        return adj
 
-    def loss_function(self, data, beta=0.05):
+    def loss_function(self, data, beta=0.2):
         x_g  = self.encoder(data)
         mu = self.fc_mu(x_g)
         logvar = self.fc_logvar(x_g)
         x_g = self.reparameterize(mu, logvar)
         adj = self.decoder(x_g)
         
-        recon = F.l1_loss(adj, data.A, reduction='mean')
+        recon = F.mse_loss(adj, data.A, reduction='sum')
         kld = -0.5 * torch.sum(1 + logvar - mu.pow(2) - logvar.exp())
+
+        # pen = torch.sum()
+        
         loss = recon + beta*kld
 
         return loss, recon, kld

@@ -25,7 +25,7 @@ from torch_geometric.loader import DataLoader
 
 from autoencoder import VariationalAutoEncoder
 from denoise_model import DenoiseNN, p_losses, sample
-from utils import linear_beta_schedule, construct_nx_from_adj, preprocess_dataset
+from utils import linear_beta_schedule, construct_nx_from_adj, preprocess_dataset, graph_statistics
 from sklearn.metrics import mean_absolute_error
 from scipy.stats import zscore
 
@@ -214,7 +214,7 @@ if args.train_autoencoder:
             torch.save({
                 'state_dict': autoencoder.state_dict(),
                 'optimizer' : optimizer.state_dict(),
-            }, './models/autoencoder.pth.tar')
+            }, './models/autoencoder_sum_beta.pth.tar')
 else:
     checkpoint = torch.load('./models/autoencoder.pth.tar')
     autoencoder.load_state_dict(checkpoint['state_dict'])
@@ -284,7 +284,7 @@ if args.train_denoiser:
             torch.save({
                 'state_dict': denoise_model.state_dict(),
                 'optimizer' : optimizer.state_dict(),
-            }, './models/denoise_model.pth.tar')
+            }, './models/denoise_model_sum_beta.pth.tar')
 else:
     checkpoint = torch.load('./models/denoise_model.pth.tar')
     denoise_model.load_state_dict(checkpoint['state_dict'])
@@ -294,15 +294,14 @@ denoise_model.eval()
 del train_loader
 
 
-# MAE on test set
-mae = 0.
-
 # Save to a CSV file
-with open("outputs/output.csv", "w", newline="") as csvfile:
+with open("./outputs/output_sum_mse_beta0.5.csv", "w", newline="") as csvfile:
     writer = csv.writer(csvfile)
+    ground_truth = []
+    pred = []
     # Write the header
     writer.writerow(["graph_id", "edge_list"])
-    for k, data in enumerate(tqdm(test_loader, desc='Processing test set',)):
+    for k, data in enumerate(tqdm(test_loader, desc='Processing test set')):
         data = data.to(device)
         
         stat = data.stats
@@ -323,15 +322,27 @@ with open("outputs/output.csv", "w", newline="") as csvfile:
             stat_x = stat_x.detach().cpu().numpy()
 
             generated_stats  = np.array(graph_statistics(Gs_generated))
-
-            mae += mean_absolute_error(zscore(stat_x), zscore(generated_stats))
+            
+            ground_truth.append(stat_x)
+            pred.append(graph_statistics(Gs_generated))
 
             # Define a graph ID
             graph_id = graph_ids[i]
+
 
             # Convert the edge list to a single string
             edge_list_text = ", ".join([f"({u}, {v})" for u, v in Gs_generated.edges()])           
             # Write the graph ID and the full edge list as a single row
             writer.writerow([graph_id, edge_list_text])
 
-print(f"Mean square error : {mae/1000}")
+ground_truth = np.array(ground_truth)
+pred = np.array(pred)
+
+mean = np.nanmean(ground_truth, axis=0)
+std = np.nanstd(ground_truth, axis=0)
+
+z_scores_ground_truth = (ground_truth - mean) / std
+z_scores_pred = (pred - mean) / std
+
+mae = mean_absolute_error(z_scores_ground_truth, z_scores_pred)
+print(mae)

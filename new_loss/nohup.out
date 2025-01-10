@@ -1,0 +1,257 @@
+/users/eleves-b/2021/valentin.dorseuil/Desktop/altegrad_project/.venv/lib64/python3.9/site-packages/networkx/utils/backends.py:135: RuntimeWarning: networkx backend defined more than once: nx-loopback
+  backends.update(_get_backends("networkx.backends"))
+usage: main.py [-h] [--lr LR] [--dropout DROPOUT] [--batch-size BATCH_SIZE]
+               [--epochs-autoencoder EPOCHS_AUTOENCODER]
+               [--hidden-dim-encoder HIDDEN_DIM_ENCODER]
+               [--hidden-dim-decoder HIDDEN_DIM_DECODER]
+               [--latent-dim LATENT_DIM] [--n-max-nodes N_MAX_NODES]
+               [--n-layers-encoder N_LAYERS_ENCODER]
+               [--n-layers-decoder N_LAYERS_DECODER]
+               [--spectral-emb-dim SPECTRAL_EMB_DIM]
+               [--epochs-denoise EPOCHS_DENOISE] [--timesteps TIMESTEPS]
+               [--hidden-dim-denoise HIDDEN_DIM_DENOISE]
+               [--n-layers_denoise N_LAYERS_DENOISE] [--train-autoencoder]
+               [--train-denoiser] [--dim-condition DIM_CONDITION]
+               [--n-condition N_CONDITION]
+main.py: error: unrecognized arguments: --train-encoder
+/users/eleves-b/2021/valentin.dorseuil/Desktop/altegrad_project/.venv/lib64/python3.9/site-packages/networkx/utils/backends.py:135: RuntimeWarning: networkx backend defined more than once: nx-loopback
+  backends.update(_get_backends("networkx.backends"))
+Traceback (most recent call last):
+  File "/users/eleves-b/2021/valentin.dorseuil/Desktop/altegrad_project/new_encoder/main.py", line 115, in <module>
+    trainset = preprocess_dataset("train", args.n_max_nodes, args.spectral_emb_dim)
+  File "/users/eleves-b/2021/valentin.dorseuil/Desktop/altegrad_project/new_encoder/utils.py", line 83, in preprocess_dataset
+    files = [f for f in os.listdir(graph_path)]
+FileNotFoundError: [Errno 2] No such file or directory: './data/train/graph'
+/users/eleves-b/2021/valentin.dorseuil/Desktop/altegrad_project/.venv/lib64/python3.9/site-packages/networkx/utils/backends.py:135: RuntimeWarning: networkx backend defined more than once: nx-loopback
+  backends.update(_get_backends("networkx.backends"))
+/users/eleves-b/2021/valentin.dorseuil/Desktop/altegrad_project/new_encoder/utils.py:78: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  data_lst = torch.load(filename)
+/users/eleves-b/2021/valentin.dorseuil/Desktop/altegrad_project/new_encoder/utils.py:53: FutureWarning: You are using `torch.load` with `weights_only=False` (the current default value), which uses the default pickle module implicitly. It is possible to construct malicious pickle data which will execute arbitrary code during unpickling (See https://github.com/pytorch/pytorch/blob/main/SECURITY.md#untrusted-models for more details). In a future release, the default value for `weights_only` will be flipped to `True`. This limits the functions that could be executed during unpickling. Arbitrary objects will no longer be allowed to be loaded via this mode unless they are explicitly allowlisted by the user via `torch.serialization.add_safe_globals`. We recommend you start setting `weights_only=True` for any use case where you don't have full control of the loaded file. Please open an issue on GitHub for any issues related to this experimental feature.
+  data_lst = torch.load(filename)
+Dataset ./data/dataset_train.pt loaded from file
+Dataset ./data/dataset_valid.pt loaded from file
+Dataset ./data/dataset_test.pt loaded from file
+05/01/2025 18:22:39 Epoch: 0001, Train Loss: 9.26244, Train Reconstruction Loss: 0.27, Train KLD Loss: 179.90, Val Loss: 1.81902, Val Reconstruction Loss: 0.34, Val KLD Loss: 29.60
+05/01/2025 18:22:39 Epoch: 0002, Train Loss: 1.49587, Train Reconstruction Loss: 0.22, Train KLD Loss: 25.60, Val Loss: 0.75157, Val Reconstruction Loss: 0.37, Val KLD Loss: 7.65
+05/01/2025 18:22:39 Epoch: 0003, Train Loss: 0.86826, Train Reconstruction Loss: 0.22, Train KLD Loss: 12.99, Val Loss: 0.54415, Val Reconstruction Loss: 0.36, Val KLD Loss: 3.61
+05/01/2025 18:22:40 Epoch: 0004, Train Loss: 0.66050, Train Reconstruction Loss: 0.22, Train KLD Loss: 8.83, Val Loss: 0.46355, Val Reconstruction Loss: 0.36, Val KLD Loss: 2.12
+05/01/2025 18:22:40 Epoch: 0005, Train Loss: 0.55690, Train Reconstruction Loss: 0.22, Train KLD Loss: 6.76, Val Loss: 0.43171, Val Reconstruction Loss: 0.36, Val KLD Loss: 1.49
+05/01/2025 18:22:40 Epoch: 0006, Train Loss: 0.48873, Train Reconstruction Loss: 0.22, Train KLD Loss: 5.37, Val Loss: 0.40136, Val Reconstruction Loss: 0.35, Val KLD Loss: 1.11
+05/01/2025 18:22:41 Epoch: 0007, Train Loss: 0.43922, Train Reconstruction Loss: 0.22, Train KLD Loss: 4.41, Val Loss: 0.38749, Val Reconstruction Loss: 0.34, Val KLD Loss: 0.87
+05/01/2025 18:22:41 Epoch: 0008, Train Loss: 0.40297, Train Reconstruction Loss: 0.22, Train KLD Loss: 3.71, Val Loss: 0.37434, Val Reconstruction Loss: 0.34, Val KLD Loss: 0.70
+05/01/2025 18:22:42 Epoch: 0009, Train Loss: 0.37550, Train Reconstruction Loss: 0.22, Train KLD Loss: 3.14, Val Loss: 0.34738, Val Reconstruction Loss: 0.32, Val KLD Loss: 0.54
+05/01/2025 18:22:42 Epoch: 0010, Train Loss: 0.35349, Train Reconstruction Loss: 0.22, Train KLD Loss: 2.70, Val Loss: 0.35045, Val Reconstruction Loss: 0.33, Val KLD Loss: 0.46
+05/01/2025 18:22:42 Epoch: 0011, Train Loss: 0.33686, Train Reconstruction Loss: 0.22, Train KLD Loss: 2.35, Val Loss: 0.34265, Val Reconstruction Loss: 0.32, Val KLD Loss: 0.38
+05/01/2025 18:22:42 Epoch: 0012, Train Loss: 0.32150, Train Reconstruction Loss: 0.22, Train KLD Loss: 2.03, Val Loss: 0.32911, Val Reconstruction Loss: 0.31, Val KLD Loss: 0.33
+05/01/2025 18:22:43 Epoch: 0013, Train Loss: 0.30825, Train Reconstruction Loss: 0.22, Train KLD Loss: 1.79, Val Loss: 0.32810, Val Reconstruction Loss: 0.31, Val KLD Loss: 0.28
+05/01/2025 18:22:43 Epoch: 0014, Train Loss: 0.29808, Train Reconstruction Loss: 0.22, Train KLD Loss: 1.58, Val Loss: 0.32480, Val Reconstruction Loss: 0.31, Val KLD Loss: 0.23
+05/01/2025 18:22:44 Epoch: 0015, Train Loss: 0.29104, Train Reconstruction Loss: 0.22, Train KLD Loss: 1.42, Val Loss: 0.30973, Val Reconstruction Loss: 0.30, Val KLD Loss: 0.22
+05/01/2025 18:22:44 Epoch: 0016, Train Loss: 0.28268, Train Reconstruction Loss: 0.22, Train KLD Loss: 1.27, Val Loss: 0.30204, Val Reconstruction Loss: 0.29, Val KLD Loss: 0.18
+05/01/2025 18:22:44 Epoch: 0017, Train Loss: 0.27522, Train Reconstruction Loss: 0.22, Train KLD Loss: 1.11, Val Loss: 0.29566, Val Reconstruction Loss: 0.29, Val KLD Loss: 0.16
+05/01/2025 18:22:45 Epoch: 0018, Train Loss: 0.27016, Train Reconstruction Loss: 0.22, Train KLD Loss: 1.01, Val Loss: 0.29447, Val Reconstruction Loss: 0.29, Val KLD Loss: 0.14
+05/01/2025 18:22:45 Epoch: 0019, Train Loss: 0.26361, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.90, Val Loss: 0.28957, Val Reconstruction Loss: 0.28, Val KLD Loss: 0.12
+05/01/2025 18:22:45 Epoch: 0020, Train Loss: 0.25973, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.81, Val Loss: 0.28455, Val Reconstruction Loss: 0.28, Val KLD Loss: 0.11
+05/01/2025 18:22:46 Epoch: 0021, Train Loss: 0.25613, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.73, Val Loss: 0.28283, Val Reconstruction Loss: 0.28, Val KLD Loss: 0.10
+05/01/2025 18:22:46 Epoch: 0022, Train Loss: 0.25216, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.67, Val Loss: 0.28596, Val Reconstruction Loss: 0.28, Val KLD Loss: 0.09
+05/01/2025 18:22:46 Epoch: 0023, Train Loss: 0.25016, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.61, Val Loss: 0.27614, Val Reconstruction Loss: 0.27, Val KLD Loss: 0.08
+05/01/2025 18:22:47 Epoch: 0024, Train Loss: 0.24575, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.55, Val Loss: 0.27260, Val Reconstruction Loss: 0.27, Val KLD Loss: 0.07
+05/01/2025 18:22:47 Epoch: 0025, Train Loss: 0.24310, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.50, Val Loss: 0.27147, Val Reconstruction Loss: 0.27, Val KLD Loss: 0.07
+05/01/2025 18:22:47 Epoch: 0026, Train Loss: 0.24278, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.46, Val Loss: 0.26768, Val Reconstruction Loss: 0.26, Val KLD Loss: 0.06
+05/01/2025 18:22:48 Epoch: 0027, Train Loss: 0.24011, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.42, Val Loss: 0.26544, Val Reconstruction Loss: 0.26, Val KLD Loss: 0.05
+05/01/2025 18:22:48 Epoch: 0028, Train Loss: 0.23819, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.38, Val Loss: 0.25818, Val Reconstruction Loss: 0.26, Val KLD Loss: 0.05
+05/01/2025 18:22:48 Epoch: 0029, Train Loss: 0.23542, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.35, Val Loss: 0.26688, Val Reconstruction Loss: 0.26, Val KLD Loss: 0.04
+05/01/2025 18:22:49 Epoch: 0030, Train Loss: 0.23479, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.32, Val Loss: 0.26015, Val Reconstruction Loss: 0.26, Val KLD Loss: 0.04
+05/01/2025 18:22:49 Epoch: 0031, Train Loss: 0.23416, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.30, Val Loss: 0.25703, Val Reconstruction Loss: 0.26, Val KLD Loss: 0.04
+05/01/2025 18:22:49 Epoch: 0032, Train Loss: 0.23246, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.27, Val Loss: 0.25613, Val Reconstruction Loss: 0.25, Val KLD Loss: 0.04
+05/01/2025 18:22:50 Epoch: 0033, Train Loss: 0.23094, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.26, Val Loss: 0.24948, Val Reconstruction Loss: 0.25, Val KLD Loss: 0.03
+05/01/2025 18:22:50 Epoch: 0034, Train Loss: 0.23047, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.25, Val Loss: 0.24657, Val Reconstruction Loss: 0.25, Val KLD Loss: 0.03
+05/01/2025 18:22:50 Epoch: 0035, Train Loss: 0.22927, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.22, Val Loss: 0.25504, Val Reconstruction Loss: 0.25, Val KLD Loss: 0.03
+05/01/2025 18:22:50 Epoch: 0036, Train Loss: 0.22934, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.20, Val Loss: 0.25345, Val Reconstruction Loss: 0.25, Val KLD Loss: 0.03
+05/01/2025 18:22:51 Epoch: 0037, Train Loss: 0.22845, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.19, Val Loss: 0.25070, Val Reconstruction Loss: 0.25, Val KLD Loss: 0.02
+05/01/2025 18:22:51 Epoch: 0038, Train Loss: 0.22769, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.17, Val Loss: 0.24764, Val Reconstruction Loss: 0.25, Val KLD Loss: 0.02
+05/01/2025 18:22:51 Epoch: 0039, Train Loss: 0.22708, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.16, Val Loss: 0.24474, Val Reconstruction Loss: 0.24, Val KLD Loss: 0.02
+05/01/2025 18:22:52 Epoch: 0040, Train Loss: 0.22666, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.15, Val Loss: 0.24668, Val Reconstruction Loss: 0.25, Val KLD Loss: 0.02
+05/01/2025 18:22:52 Epoch: 0041, Train Loss: 0.22506, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.14, Val Loss: 0.23859, Val Reconstruction Loss: 0.24, Val KLD Loss: 0.02
+05/01/2025 18:22:52 Epoch: 0042, Train Loss: 0.22369, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.13, Val Loss: 0.24578, Val Reconstruction Loss: 0.24, Val KLD Loss: 0.02
+05/01/2025 18:22:52 Epoch: 0043, Train Loss: 0.22629, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.13, Val Loss: 0.24112, Val Reconstruction Loss: 0.24, Val KLD Loss: 0.02
+05/01/2025 18:22:53 Epoch: 0044, Train Loss: 0.22458, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.11, Val Loss: 0.24425, Val Reconstruction Loss: 0.24, Val KLD Loss: 0.01
+05/01/2025 18:22:53 Epoch: 0045, Train Loss: 0.22438, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.10, Val Loss: 0.24043, Val Reconstruction Loss: 0.24, Val KLD Loss: 0.01
+05/01/2025 18:22:53 Epoch: 0046, Train Loss: 0.22397, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.10, Val Loss: 0.23893, Val Reconstruction Loss: 0.24, Val KLD Loss: 0.01
+05/01/2025 18:22:53 Epoch: 0047, Train Loss: 0.22262, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.09, Val Loss: 0.23696, Val Reconstruction Loss: 0.24, Val KLD Loss: 0.01
+05/01/2025 18:22:54 Epoch: 0048, Train Loss: 0.22305, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.09, Val Loss: 0.24035, Val Reconstruction Loss: 0.24, Val KLD Loss: 0.01
+05/01/2025 18:22:54 Epoch: 0049, Train Loss: 0.22323, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.08, Val Loss: 0.24276, Val Reconstruction Loss: 0.24, Val KLD Loss: 0.01
+05/01/2025 18:22:54 Epoch: 0050, Train Loss: 0.22431, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.07, Val Loss: 0.23801, Val Reconstruction Loss: 0.24, Val KLD Loss: 0.01
+05/01/2025 18:22:55 Epoch: 0051, Train Loss: 0.22234, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.07, Val Loss: 0.23726, Val Reconstruction Loss: 0.24, Val KLD Loss: 0.01
+05/01/2025 18:22:55 Epoch: 0052, Train Loss: 0.22227, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.06, Val Loss: 0.24194, Val Reconstruction Loss: 0.24, Val KLD Loss: 0.01
+05/01/2025 18:22:55 Epoch: 0053, Train Loss: 0.22225, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.06, Val Loss: 0.23429, Val Reconstruction Loss: 0.23, Val KLD Loss: 0.01
+05/01/2025 18:22:55 Epoch: 0054, Train Loss: 0.22218, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.06, Val Loss: 0.23726, Val Reconstruction Loss: 0.24, Val KLD Loss: 0.01
+05/01/2025 18:22:56 Epoch: 0055, Train Loss: 0.22152, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.05, Val Loss: 0.24010, Val Reconstruction Loss: 0.24, Val KLD Loss: 0.01
+05/01/2025 18:22:56 Epoch: 0056, Train Loss: 0.22272, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.05, Val Loss: 0.24249, Val Reconstruction Loss: 0.24, Val KLD Loss: 0.01
+05/01/2025 18:22:56 Epoch: 0057, Train Loss: 0.22159, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.05, Val Loss: 0.23998, Val Reconstruction Loss: 0.24, Val KLD Loss: 0.01
+05/01/2025 18:22:56 Epoch: 0058, Train Loss: 0.21928, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.04, Val Loss: 0.23915, Val Reconstruction Loss: 0.24, Val KLD Loss: 0.01
+05/01/2025 18:22:57 Epoch: 0059, Train Loss: 0.22144, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.04, Val Loss: 0.23841, Val Reconstruction Loss: 0.24, Val KLD Loss: 0.01
+05/01/2025 18:22:57 Epoch: 0060, Train Loss: 0.22119, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.04, Val Loss: 0.23399, Val Reconstruction Loss: 0.23, Val KLD Loss: 0.00
+05/01/2025 18:22:57 Epoch: 0061, Train Loss: 0.21977, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.04, Val Loss: 0.23659, Val Reconstruction Loss: 0.24, Val KLD Loss: 0.00
+05/01/2025 18:22:58 Epoch: 0062, Train Loss: 0.22130, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.03, Val Loss: 0.23744, Val Reconstruction Loss: 0.24, Val KLD Loss: 0.00
+05/01/2025 18:22:58 Epoch: 0063, Train Loss: 0.22061, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.03, Val Loss: 0.23742, Val Reconstruction Loss: 0.24, Val KLD Loss: 0.00
+05/01/2025 18:22:58 Epoch: 0064, Train Loss: 0.22255, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.03, Val Loss: 0.23249, Val Reconstruction Loss: 0.23, Val KLD Loss: 0.00
+05/01/2025 18:22:58 Epoch: 0065, Train Loss: 0.22048, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.03, Val Loss: 0.23375, Val Reconstruction Loss: 0.23, Val KLD Loss: 0.00
+05/01/2025 18:22:59 Epoch: 0066, Train Loss: 0.22090, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.03, Val Loss: 0.23362, Val Reconstruction Loss: 0.23, Val KLD Loss: 0.00
+05/01/2025 18:22:59 Epoch: 0067, Train Loss: 0.22170, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.03, Val Loss: 0.23238, Val Reconstruction Loss: 0.23, Val KLD Loss: 0.00
+05/01/2025 18:22:59 Epoch: 0068, Train Loss: 0.22045, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.02, Val Loss: 0.23457, Val Reconstruction Loss: 0.23, Val KLD Loss: 0.00
+05/01/2025 18:23:00 Epoch: 0069, Train Loss: 0.21980, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.02, Val Loss: 0.23305, Val Reconstruction Loss: 0.23, Val KLD Loss: 0.00
+05/01/2025 18:23:00 Epoch: 0070, Train Loss: 0.22004, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.02, Val Loss: 0.23010, Val Reconstruction Loss: 0.23, Val KLD Loss: 0.00
+05/01/2025 18:23:00 Epoch: 0071, Train Loss: 0.21919, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.02, Val Loss: 0.23180, Val Reconstruction Loss: 0.23, Val KLD Loss: 0.00
+05/01/2025 18:23:00 Epoch: 0072, Train Loss: 0.22061, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.02, Val Loss: 0.22875, Val Reconstruction Loss: 0.23, Val KLD Loss: 0.00
+05/01/2025 18:23:01 Epoch: 0073, Train Loss: 0.22006, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.02, Val Loss: 0.22833, Val Reconstruction Loss: 0.23, Val KLD Loss: 0.00
+05/01/2025 18:23:01 Epoch: 0074, Train Loss: 0.21993, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.02, Val Loss: 0.23380, Val Reconstruction Loss: 0.23, Val KLD Loss: 0.00
+05/01/2025 18:23:01 Epoch: 0075, Train Loss: 0.22031, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.02, Val Loss: 0.23490, Val Reconstruction Loss: 0.23, Val KLD Loss: 0.00
+05/01/2025 18:23:02 Epoch: 0076, Train Loss: 0.21926, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.02, Val Loss: 0.23318, Val Reconstruction Loss: 0.23, Val KLD Loss: 0.00
+05/01/2025 18:23:02 Epoch: 0077, Train Loss: 0.22117, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.01, Val Loss: 0.22511, Val Reconstruction Loss: 0.23, Val KLD Loss: 0.00
+05/01/2025 18:23:02 Epoch: 0078, Train Loss: 0.21875, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.01, Val Loss: 0.22542, Val Reconstruction Loss: 0.23, Val KLD Loss: 0.00
+05/01/2025 18:23:03 Epoch: 0079, Train Loss: 0.21886, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.01, Val Loss: 0.22783, Val Reconstruction Loss: 0.23, Val KLD Loss: 0.00
+05/01/2025 18:23:03 Epoch: 0080, Train Loss: 0.21883, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.01, Val Loss: 0.22992, Val Reconstruction Loss: 0.23, Val KLD Loss: 0.00
+05/01/2025 18:23:03 Epoch: 0081, Train Loss: 0.22004, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.01, Val Loss: 0.23144, Val Reconstruction Loss: 0.23, Val KLD Loss: 0.00
+05/01/2025 18:23:03 Epoch: 0082, Train Loss: 0.22011, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.01, Val Loss: 0.23012, Val Reconstruction Loss: 0.23, Val KLD Loss: 0.00
+05/01/2025 18:23:04 Epoch: 0083, Train Loss: 0.21915, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.01, Val Loss: 0.23354, Val Reconstruction Loss: 0.23, Val KLD Loss: 0.00
+05/01/2025 18:23:04 Epoch: 0084, Train Loss: 0.21999, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.01, Val Loss: 0.22792, Val Reconstruction Loss: 0.23, Val KLD Loss: 0.00
+05/01/2025 18:23:04 Epoch: 0085, Train Loss: 0.21871, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.01, Val Loss: 0.22953, Val Reconstruction Loss: 0.23, Val KLD Loss: 0.00
+05/01/2025 18:23:04 Epoch: 0086, Train Loss: 0.21994, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.01, Val Loss: 0.22970, Val Reconstruction Loss: 0.23, Val KLD Loss: 0.00
+05/01/2025 18:23:05 Epoch: 0087, Train Loss: 0.21967, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.01, Val Loss: 0.23208, Val Reconstruction Loss: 0.23, Val KLD Loss: 0.00
+05/01/2025 18:23:05 Epoch: 0088, Train Loss: 0.22025, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.01, Val Loss: 0.23449, Val Reconstruction Loss: 0.23, Val KLD Loss: 0.00
+05/01/2025 18:23:05 Epoch: 0089, Train Loss: 0.22011, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.01, Val Loss: 0.22911, Val Reconstruction Loss: 0.23, Val KLD Loss: 0.00
+05/01/2025 18:23:05 Epoch: 0090, Train Loss: 0.21977, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.01, Val Loss: 0.22641, Val Reconstruction Loss: 0.23, Val KLD Loss: 0.00
+05/01/2025 18:23:06 Epoch: 0091, Train Loss: 0.21793, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.01, Val Loss: 0.22822, Val Reconstruction Loss: 0.23, Val KLD Loss: 0.00
+05/01/2025 18:23:06 Epoch: 0092, Train Loss: 0.21918, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.01, Val Loss: 0.22759, Val Reconstruction Loss: 0.23, Val KLD Loss: 0.00
+05/01/2025 18:23:06 Epoch: 0093, Train Loss: 0.21824, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.01, Val Loss: 0.22936, Val Reconstruction Loss: 0.23, Val KLD Loss: 0.00
+05/01/2025 18:23:06 Epoch: 0094, Train Loss: 0.21993, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.01, Val Loss: 0.22402, Val Reconstruction Loss: 0.22, Val KLD Loss: 0.00
+05/01/2025 18:23:07 Epoch: 0095, Train Loss: 0.21800, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.01, Val Loss: 0.22643, Val Reconstruction Loss: 0.23, Val KLD Loss: 0.00
+05/01/2025 18:23:07 Epoch: 0096, Train Loss: 0.21925, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.01, Val Loss: 0.22551, Val Reconstruction Loss: 0.23, Val KLD Loss: 0.00
+05/01/2025 18:23:07 Epoch: 0097, Train Loss: 0.21939, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.01, Val Loss: 0.22722, Val Reconstruction Loss: 0.23, Val KLD Loss: 0.00
+05/01/2025 18:23:08 Epoch: 0098, Train Loss: 0.21883, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.00, Val Loss: 0.22953, Val Reconstruction Loss: 0.23, Val KLD Loss: 0.00
+05/01/2025 18:23:08 Epoch: 0099, Train Loss: 0.22052, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.01, Val Loss: 0.22460, Val Reconstruction Loss: 0.22, Val KLD Loss: 0.01
+05/01/2025 18:23:08 Epoch: 0100, Train Loss: 0.21947, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.02, Val Loss: 0.22517, Val Reconstruction Loss: 0.22, Val KLD Loss: 0.03
+05/01/2025 18:23:08 Epoch: 0101, Train Loss: 0.22008, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.03, Val Loss: 0.22706, Val Reconstruction Loss: 0.23, Val KLD Loss: 0.04
+05/01/2025 18:23:09 Epoch: 0102, Train Loss: 0.21984, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.02, Val Loss: 0.22346, Val Reconstruction Loss: 0.22, Val KLD Loss: 0.01
+05/01/2025 18:23:09 Epoch: 0103, Train Loss: 0.21954, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.01, Val Loss: 0.22321, Val Reconstruction Loss: 0.22, Val KLD Loss: 0.00
+05/01/2025 18:23:09 Epoch: 0104, Train Loss: 0.21950, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.00, Val Loss: 0.22425, Val Reconstruction Loss: 0.22, Val KLD Loss: 0.00
+05/01/2025 18:23:10 Epoch: 0105, Train Loss: 0.21825, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.00, Val Loss: 0.22556, Val Reconstruction Loss: 0.23, Val KLD Loss: 0.00
+05/01/2025 18:23:10 Epoch: 0106, Train Loss: 0.21872, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.00, Val Loss: 0.22343, Val Reconstruction Loss: 0.22, Val KLD Loss: 0.00
+05/01/2025 18:23:10 Epoch: 0107, Train Loss: 0.21832, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.00, Val Loss: 0.22414, Val Reconstruction Loss: 0.22, Val KLD Loss: 0.00
+05/01/2025 18:23:10 Epoch: 0108, Train Loss: 0.21852, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.00, Val Loss: 0.22528, Val Reconstruction Loss: 0.23, Val KLD Loss: 0.00
+05/01/2025 18:23:11 Epoch: 0109, Train Loss: 0.21878, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.00, Val Loss: 0.22557, Val Reconstruction Loss: 0.23, Val KLD Loss: 0.00
+05/01/2025 18:23:11 Epoch: 0110, Train Loss: 0.21803, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.00, Val Loss: 0.22358, Val Reconstruction Loss: 0.22, Val KLD Loss: 0.00
+05/01/2025 18:23:11 Epoch: 0111, Train Loss: 0.21949, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.00, Val Loss: 0.22137, Val Reconstruction Loss: 0.22, Val KLD Loss: 0.00
+05/01/2025 18:23:11 Epoch: 0112, Train Loss: 0.21877, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.00, Val Loss: 0.22722, Val Reconstruction Loss: 0.23, Val KLD Loss: 0.00
+05/01/2025 18:23:12 Epoch: 0113, Train Loss: 0.21943, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.00, Val Loss: 0.22158, Val Reconstruction Loss: 0.22, Val KLD Loss: 0.00
+05/01/2025 18:23:12 Epoch: 0114, Train Loss: 0.21850, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.00, Val Loss: 0.22427, Val Reconstruction Loss: 0.22, Val KLD Loss: 0.00
+05/01/2025 18:23:12 Epoch: 0115, Train Loss: 0.21913, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.00, Val Loss: 0.22602, Val Reconstruction Loss: 0.23, Val KLD Loss: 0.00
+05/01/2025 18:23:12 Epoch: 0116, Train Loss: 0.21912, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.01, Val Loss: 0.22361, Val Reconstruction Loss: 0.22, Val KLD Loss: 0.00
+05/01/2025 18:23:13 Epoch: 0117, Train Loss: 0.21866, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.01, Val Loss: 0.22286, Val Reconstruction Loss: 0.22, Val KLD Loss: 0.01
+05/01/2025 18:23:13 Epoch: 0118, Train Loss: 0.21953, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.01, Val Loss: 0.22728, Val Reconstruction Loss: 0.23, Val KLD Loss: 0.00
+05/01/2025 18:23:13 Epoch: 0119, Train Loss: 0.21962, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.01, Val Loss: 0.22718, Val Reconstruction Loss: 0.23, Val KLD Loss: 0.01
+05/01/2025 18:23:13 Epoch: 0120, Train Loss: 0.21977, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.01, Val Loss: 0.22240, Val Reconstruction Loss: 0.22, Val KLD Loss: 0.00
+05/01/2025 18:23:14 Epoch: 0121, Train Loss: 0.21960, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.01, Val Loss: 0.22603, Val Reconstruction Loss: 0.23, Val KLD Loss: 0.01
+05/01/2025 18:23:14 Epoch: 0122, Train Loss: 0.22041, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.02, Val Loss: 0.22734, Val Reconstruction Loss: 0.23, Val KLD Loss: 0.01
+05/01/2025 18:23:14 Epoch: 0123, Train Loss: 0.22055, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.01, Val Loss: 0.22516, Val Reconstruction Loss: 0.23, Val KLD Loss: 0.00
+05/01/2025 18:23:14 Epoch: 0124, Train Loss: 0.21855, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.00, Val Loss: 0.22249, Val Reconstruction Loss: 0.22, Val KLD Loss: 0.00
+05/01/2025 18:23:15 Epoch: 0125, Train Loss: 0.21983, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.01, Val Loss: 0.22353, Val Reconstruction Loss: 0.22, Val KLD Loss: 0.00
+05/01/2025 18:23:15 Epoch: 0126, Train Loss: 0.21944, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.01, Val Loss: 0.22385, Val Reconstruction Loss: 0.22, Val KLD Loss: 0.00
+05/01/2025 18:23:15 Epoch: 0127, Train Loss: 0.21977, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.01, Val Loss: 0.22283, Val Reconstruction Loss: 0.22, Val KLD Loss: 0.02
+05/01/2025 18:23:15 Epoch: 0128, Train Loss: 0.21988, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.02, Val Loss: 0.22881, Val Reconstruction Loss: 0.23, Val KLD Loss: 0.00
+05/01/2025 18:23:16 Epoch: 0129, Train Loss: 0.22097, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.00, Val Loss: 0.22648, Val Reconstruction Loss: 0.23, Val KLD Loss: 0.00
+05/01/2025 18:23:16 Epoch: 0130, Train Loss: 0.21949, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.00, Val Loss: 0.22255, Val Reconstruction Loss: 0.22, Val KLD Loss: 0.00
+05/01/2025 18:23:16 Epoch: 0131, Train Loss: 0.21886, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.00, Val Loss: 0.22336, Val Reconstruction Loss: 0.22, Val KLD Loss: 0.00
+05/01/2025 18:23:16 Epoch: 0132, Train Loss: 0.21888, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.00, Val Loss: 0.22264, Val Reconstruction Loss: 0.22, Val KLD Loss: 0.00
+05/01/2025 18:23:17 Epoch: 0133, Train Loss: 0.21875, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.00, Val Loss: 0.22255, Val Reconstruction Loss: 0.22, Val KLD Loss: 0.01
+05/01/2025 18:23:17 Epoch: 0134, Train Loss: 0.21914, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.02, Val Loss: 0.22546, Val Reconstruction Loss: 0.23, Val KLD Loss: 0.00
+05/01/2025 18:23:17 Epoch: 0135, Train Loss: 0.21870, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.00, Val Loss: 0.22275, Val Reconstruction Loss: 0.22, Val KLD Loss: 0.00
+05/01/2025 18:23:17 Epoch: 0136, Train Loss: 0.21879, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.00, Val Loss: 0.22452, Val Reconstruction Loss: 0.22, Val KLD Loss: 0.00
+05/01/2025 18:23:18 Epoch: 0137, Train Loss: 0.21950, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.00, Val Loss: 0.22422, Val Reconstruction Loss: 0.22, Val KLD Loss: 0.00
+05/01/2025 18:23:18 Epoch: 0138, Train Loss: 0.21930, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.00, Val Loss: 0.22571, Val Reconstruction Loss: 0.23, Val KLD Loss: 0.00
+05/01/2025 18:23:18 Epoch: 0139, Train Loss: 0.21899, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.02, Val Loss: 0.22835, Val Reconstruction Loss: 0.23, Val KLD Loss: 0.01
+05/01/2025 18:23:19 Epoch: 0140, Train Loss: 0.21845, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.01, Val Loss: 0.22569, Val Reconstruction Loss: 0.23, Val KLD Loss: 0.00
+05/01/2025 18:23:19 Epoch: 0141, Train Loss: 0.21941, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.00, Val Loss: 0.22126, Val Reconstruction Loss: 0.22, Val KLD Loss: 0.00
+05/01/2025 18:23:19 Epoch: 0142, Train Loss: 0.21836, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.01, Val Loss: 0.22555, Val Reconstruction Loss: 0.23, Val KLD Loss: 0.00
+05/01/2025 18:23:19 Epoch: 0143, Train Loss: 0.21907, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.00, Val Loss: 0.22588, Val Reconstruction Loss: 0.23, Val KLD Loss: 0.01
+05/01/2025 18:23:20 Epoch: 0144, Train Loss: 0.22088, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.01, Val Loss: 0.22315, Val Reconstruction Loss: 0.22, Val KLD Loss: 0.00
+05/01/2025 18:23:20 Epoch: 0145, Train Loss: 0.21766, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.01, Val Loss: 0.22574, Val Reconstruction Loss: 0.23, Val KLD Loss: 0.01
+05/01/2025 18:23:20 Epoch: 0146, Train Loss: 0.21954, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.01, Val Loss: 0.22597, Val Reconstruction Loss: 0.23, Val KLD Loss: 0.00
+05/01/2025 18:23:20 Epoch: 0147, Train Loss: 0.22010, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.01, Val Loss: 0.22247, Val Reconstruction Loss: 0.22, Val KLD Loss: 0.00
+05/01/2025 18:23:21 Epoch: 0148, Train Loss: 0.22039, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.01, Val Loss: 0.22307, Val Reconstruction Loss: 0.22, Val KLD Loss: 0.01
+05/01/2025 18:23:21 Epoch: 0149, Train Loss: 0.21867, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.01, Val Loss: 0.22402, Val Reconstruction Loss: 0.22, Val KLD Loss: 0.02
+05/01/2025 18:23:21 Epoch: 0150, Train Loss: 0.21925, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.02, Val Loss: 0.22618, Val Reconstruction Loss: 0.23, Val KLD Loss: 0.01
+05/01/2025 18:23:21 Epoch: 0151, Train Loss: 0.22071, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.01, Val Loss: 0.22271, Val Reconstruction Loss: 0.22, Val KLD Loss: 0.01
+05/01/2025 18:23:22 Epoch: 0152, Train Loss: 0.21762, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.01, Val Loss: 0.22449, Val Reconstruction Loss: 0.22, Val KLD Loss: 0.01
+05/01/2025 18:23:22 Epoch: 0153, Train Loss: 0.21903, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.00, Val Loss: 0.22495, Val Reconstruction Loss: 0.22, Val KLD Loss: 0.00
+05/01/2025 18:23:22 Epoch: 0154, Train Loss: 0.21902, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.00, Val Loss: 0.22368, Val Reconstruction Loss: 0.22, Val KLD Loss: 0.00
+05/01/2025 18:23:22 Epoch: 0155, Train Loss: 0.21840, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.00, Val Loss: 0.22419, Val Reconstruction Loss: 0.22, Val KLD Loss: 0.00
+05/01/2025 18:23:23 Epoch: 0156, Train Loss: 0.21820, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.01, Val Loss: 0.22404, Val Reconstruction Loss: 0.22, Val KLD Loss: 0.03
+05/01/2025 18:23:23 Epoch: 0157, Train Loss: 0.22132, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.05, Val Loss: 0.22405, Val Reconstruction Loss: 0.22, Val KLD Loss: 0.04
+05/01/2025 18:23:23 Epoch: 0158, Train Loss: 0.21989, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.02, Val Loss: 0.21775, Val Reconstruction Loss: 0.22, Val KLD Loss: 0.00
+05/01/2025 18:23:24 Epoch: 0159, Train Loss: 0.21817, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.00, Val Loss: 0.22167, Val Reconstruction Loss: 0.22, Val KLD Loss: 0.00
+05/01/2025 18:23:24 Epoch: 0160, Train Loss: 0.21853, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.00, Val Loss: 0.22191, Val Reconstruction Loss: 0.22, Val KLD Loss: 0.00
+05/01/2025 18:23:24 Epoch: 0161, Train Loss: 0.21974, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.00, Val Loss: 0.22004, Val Reconstruction Loss: 0.22, Val KLD Loss: 0.01
+05/01/2025 18:23:24 Epoch: 0162, Train Loss: 0.22003, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.04, Val Loss: 0.21989, Val Reconstruction Loss: 0.22, Val KLD Loss: 0.00
+05/01/2025 18:23:25 Epoch: 0163, Train Loss: 0.21910, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.00, Val Loss: 0.21932, Val Reconstruction Loss: 0.22, Val KLD Loss: 0.00
+05/01/2025 18:23:25 Epoch: 0164, Train Loss: 0.21959, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.00, Val Loss: 0.22434, Val Reconstruction Loss: 0.22, Val KLD Loss: 0.00
+05/01/2025 18:23:25 Epoch: 0165, Train Loss: 0.21890, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.00, Val Loss: 0.22101, Val Reconstruction Loss: 0.22, Val KLD Loss: 0.00
+05/01/2025 18:23:25 Epoch: 0166, Train Loss: 0.21854, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.00, Val Loss: 0.21957, Val Reconstruction Loss: 0.22, Val KLD Loss: 0.00
+05/01/2025 18:23:26 Epoch: 0167, Train Loss: 0.21866, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.00, Val Loss: 0.21813, Val Reconstruction Loss: 0.22, Val KLD Loss: 0.00
+05/01/2025 18:23:26 Epoch: 0168, Train Loss: 0.21982, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.00, Val Loss: 0.21657, Val Reconstruction Loss: 0.22, Val KLD Loss: 0.00
+05/01/2025 18:23:26 Epoch: 0169, Train Loss: 0.21801, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.00, Val Loss: 0.22206, Val Reconstruction Loss: 0.22, Val KLD Loss: 0.00
+05/01/2025 18:23:26 Epoch: 0170, Train Loss: 0.21989, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.00, Val Loss: 0.21950, Val Reconstruction Loss: 0.22, Val KLD Loss: 0.00
+05/01/2025 18:23:27 Epoch: 0171, Train Loss: 0.22031, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.01, Val Loss: 0.21845, Val Reconstruction Loss: 0.22, Val KLD Loss: 0.01
+05/01/2025 18:23:27 Epoch: 0172, Train Loss: 0.21893, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.01, Val Loss: 0.21782, Val Reconstruction Loss: 0.22, Val KLD Loss: 0.01
+05/01/2025 18:23:27 Epoch: 0173, Train Loss: 0.21971, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.01, Val Loss: 0.22024, Val Reconstruction Loss: 0.22, Val KLD Loss: 0.00
+05/01/2025 18:23:27 Epoch: 0174, Train Loss: 0.21860, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.00, Val Loss: 0.21684, Val Reconstruction Loss: 0.22, Val KLD Loss: 0.00
+05/01/2025 18:23:28 Epoch: 0175, Train Loss: 0.21880, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.00, Val Loss: 0.21949, Val Reconstruction Loss: 0.22, Val KLD Loss: 0.00
+05/01/2025 18:23:28 Epoch: 0176, Train Loss: 0.21980, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.00, Val Loss: 0.22050, Val Reconstruction Loss: 0.22, Val KLD Loss: 0.00
+05/01/2025 18:23:28 Epoch: 0177, Train Loss: 0.22007, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.02, Val Loss: 0.21904, Val Reconstruction Loss: 0.22, Val KLD Loss: 0.01
+05/01/2025 18:23:28 Epoch: 0178, Train Loss: 0.21959, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.01, Val Loss: 0.21541, Val Reconstruction Loss: 0.22, Val KLD Loss: 0.01
+05/01/2025 18:23:29 Epoch: 0179, Train Loss: 0.21831, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.00, Val Loss: 0.21806, Val Reconstruction Loss: 0.22, Val KLD Loss: 0.00
+05/01/2025 18:23:29 Epoch: 0180, Train Loss: 0.21864, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.00, Val Loss: 0.22094, Val Reconstruction Loss: 0.22, Val KLD Loss: 0.00
+05/01/2025 18:23:29 Epoch: 0181, Train Loss: 0.21890, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.00, Val Loss: 0.22121, Val Reconstruction Loss: 0.22, Val KLD Loss: 0.00
+05/01/2025 18:23:30 Epoch: 0182, Train Loss: 0.21850, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.00, Val Loss: 0.22125, Val Reconstruction Loss: 0.22, Val KLD Loss: 0.00
+05/01/2025 18:23:30 Epoch: 0183, Train Loss: 0.22051, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.02, Val Loss: 0.21692, Val Reconstruction Loss: 0.22, Val KLD Loss: 0.01
+05/01/2025 18:23:30 Epoch: 0184, Train Loss: 0.21959, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.01, Val Loss: 0.21859, Val Reconstruction Loss: 0.22, Val KLD Loss: 0.00
+05/01/2025 18:23:30 Epoch: 0185, Train Loss: 0.21926, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.00, Val Loss: 0.22206, Val Reconstruction Loss: 0.22, Val KLD Loss: 0.01
+05/01/2025 18:23:31 Epoch: 0186, Train Loss: 0.21808, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.00, Val Loss: 0.22071, Val Reconstruction Loss: 0.22, Val KLD Loss: 0.01
+05/01/2025 18:23:31 Epoch: 0187, Train Loss: 0.21992, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.01, Val Loss: 0.22052, Val Reconstruction Loss: 0.22, Val KLD Loss: 0.01
+05/01/2025 18:23:31 Epoch: 0188, Train Loss: 0.22098, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.02, Val Loss: 0.21944, Val Reconstruction Loss: 0.22, Val KLD Loss: 0.01
+05/01/2025 18:23:31 Epoch: 0189, Train Loss: 0.21921, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.01, Val Loss: 0.21890, Val Reconstruction Loss: 0.22, Val KLD Loss: 0.01
+05/01/2025 18:23:32 Epoch: 0190, Train Loss: 0.21821, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.01, Val Loss: 0.22238, Val Reconstruction Loss: 0.22, Val KLD Loss: 0.00
+05/01/2025 18:23:32 Epoch: 0191, Train Loss: 0.21853, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.00, Val Loss: 0.21962, Val Reconstruction Loss: 0.22, Val KLD Loss: 0.00
+05/01/2025 18:23:32 Epoch: 0192, Train Loss: 0.21893, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.00, Val Loss: 0.22253, Val Reconstruction Loss: 0.22, Val KLD Loss: 0.00
+05/01/2025 18:23:32 Epoch: 0193, Train Loss: 0.21963, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.00, Val Loss: 0.21979, Val Reconstruction Loss: 0.22, Val KLD Loss: 0.00
+05/01/2025 18:23:33 Epoch: 0194, Train Loss: 0.21841, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.00, Val Loss: 0.22407, Val Reconstruction Loss: 0.22, Val KLD Loss: 0.00
+05/01/2025 18:23:33 Epoch: 0195, Train Loss: 0.21960, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.00, Val Loss: 0.21972, Val Reconstruction Loss: 0.22, Val KLD Loss: 0.00
+05/01/2025 18:23:33 Epoch: 0196, Train Loss: 0.21864, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.01, Val Loss: 0.22231, Val Reconstruction Loss: 0.22, Val KLD Loss: 0.02
+05/01/2025 18:23:33 Epoch: 0197, Train Loss: 0.21940, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.02, Val Loss: 0.22183, Val Reconstruction Loss: 0.22, Val KLD Loss: 0.02
+05/01/2025 18:23:34 Epoch: 0198, Train Loss: 0.21997, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.01, Val Loss: 0.21883, Val Reconstruction Loss: 0.22, Val KLD Loss: 0.01
+05/01/2025 18:23:34 Epoch: 0199, Train Loss: 0.21802, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.01, Val Loss: 0.22394, Val Reconstruction Loss: 0.22, Val KLD Loss: 0.00
+05/01/2025 18:23:34 Epoch: 0200, Train Loss: 0.21959, Train Reconstruction Loss: 0.22, Train KLD Loss: 0.00, Val Loss: 0.22206, Val Reconstruction Loss: 0.22, Val KLD Loss: 0.00
+05/01/2025 18:23:36 Epoch: 0005, Train Loss: 0.30357, Val Loss: 1.06945
+05/01/2025 18:23:37 Epoch: 0010, Train Loss: 0.17802, Val Loss: 0.20714
+05/01/2025 18:23:39 Epoch: 0015, Train Loss: 0.12785, Val Loss: 0.14487
+05/01/2025 18:23:40 Epoch: 0020, Train Loss: 0.09812, Val Loss: 0.16029
+05/01/2025 18:23:42 Epoch: 0025, Train Loss: 0.08479, Val Loss: 0.13106
+05/01/2025 18:23:43 Epoch: 0030, Train Loss: 0.08187, Val Loss: 0.09537
+05/01/2025 18:23:45 Epoch: 0035, Train Loss: 0.06528, Val Loss: 0.09584
+05/01/2025 18:23:46 Epoch: 0040, Train Loss: 0.05763, Val Loss: 0.09543
+05/01/2025 18:23:48 Epoch: 0045, Train Loss: 0.05083, Val Loss: 0.11055
+05/01/2025 18:23:49 Epoch: 0050, Train Loss: 0.04654, Val Loss: 0.05478
+05/01/2025 18:23:50 Epoch: 0055, Train Loss: 0.04317, Val Loss: 0.05209
+05/01/2025 18:23:52 Epoch: 0060, Train Loss: 0.03733, Val Loss: 0.05662
+05/01/2025 18:23:53 Epoch: 0065, Train Loss: 0.03845, Val Loss: 0.08135
+05/01/2025 18:23:55 Epoch: 0070, Train Loss: 0.03664, Val Loss: 0.04814
+05/01/2025 18:23:56 Epoch: 0075, Train Loss: 0.02805, Val Loss: 0.06802
+05/01/2025 18:23:57 Epoch: 0080, Train Loss: 0.02785, Val Loss: 0.04097
+05/01/2025 18:23:59 Epoch: 0085, Train Loss: 0.03126, Val Loss: 0.03822
+05/01/2025 18:24:00 Epoch: 0090, Train Loss: 0.02798, Val Loss: 0.03330
+05/01/2025 18:24:01 Epoch: 0095, Train Loss: 0.02388, Val Loss: 0.02560
+05/01/2025 18:24:03 Epoch: 0100, Train Loss: 0.02315, Val Loss: 0.02586
+Traceback (most recent call last):
+  File "/users/eleves-b/2021/valentin.dorseuil/Desktop/altegrad_project/new_encoder/main.py", line 301, in <module>
+    with open("outputs/output.csv", "w", newline="") as csvfile:
+FileNotFoundError: [Errno 2] No such file or directory: 'outputs/output.csv'

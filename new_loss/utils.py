@@ -20,7 +20,27 @@ from torch_geometric.data import Data
 
 from extract_feats import extract_feats, extract_numbers
 
+def graph_statistics(G):
+    num_nodes = G.number_of_nodes()
+    num_edges = G.number_of_edges()
+    average_degree = sum(dict(G.degree()).values()) / num_nodes
+    num_triangles = sum(nx.triangles(G).values()) // 3
+    global_clustering_coefficient = nx.transitivity(G)
+    k_core = nx.k_core(G)
+    max_k_core = max(k_core.nodes())
+    partition = community_louvain.best_partition(G)
+    num_communities = len(set(partition.values()))
 
+    # Return the results in a list
+    return [
+        num_nodes,
+        num_edges,
+        average_degree,
+        num_triangles,
+        global_clustering_coefficient,
+        max_k_core,
+        num_communities
+    ]
 
 def preprocess_dataset(dataset, n_max_nodes, spectral_emb_dim):
 
@@ -36,6 +56,7 @@ def preprocess_dataset(dataset, n_max_nodes, spectral_emb_dim):
         else:
             fr = open(desc_file, "r")
             for line in fr:
+                text = line
                 line = line.strip()
                 tokens = line.split(",")
                 graph_id = tokens[0]
@@ -43,7 +64,8 @@ def preprocess_dataset(dataset, n_max_nodes, spectral_emb_dim):
                 desc = "".join(desc)
                 feats_stats = extract_numbers(desc)
                 feats_stats = torch.FloatTensor(feats_stats).unsqueeze(0)
-                data_lst.append(Data(stats=feats_stats, filename = graph_id))
+                print(text)
+                data_lst.append(Data(stats=feats_stats, filename = graph_id, text=line))
             fr.close()                    
             torch.save(data_lst, filename)
             print(f'Dataset {filename} saved')
@@ -118,6 +140,7 @@ def preprocess_dataset(dataset, n_max_nodes, spectral_emb_dim):
                 eigval = torch.real(eigval)
                 eigvecs = torch.real(eigvecs)
                 idx = torch.argsort(eigval)
+
                 eigvecs = eigvecs[:,idx]
 
                 edge_index = torch.nonzero(adj).t()
@@ -132,9 +155,12 @@ def preprocess_dataset(dataset, n_max_nodes, spectral_emb_dim):
                 adj = adj.unsqueeze(0)
 
                 feats_stats = extract_feats(fstats)
+                with open(fstats) as f:
+                    text = f.readline().strip()        
+                                
                 feats_stats = torch.FloatTensor(feats_stats).unsqueeze(0)
 
-                data_lst.append(Data(x=x, edge_index=edge_index, A=adj, stats=feats_stats, filename = filen))
+                data_lst.append(Data(x=x, edge_index=edge_index, A=adj, stats=feats_stats, filename = filen, text = text))
             torch.save(data_lst, filename)
             print(f'Dataset {filename} saved')
     return data_lst
