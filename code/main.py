@@ -25,11 +25,7 @@ from torch_geometric.loader import DataLoader
 
 from autoencoder import VariationalAutoEncoder
 from denoise_model import DenoiseNN, p_losses, sample
-from utils import linear_beta_schedule, construct_nx_from_adj, preprocess_dataset
-from sklearn.metrics import mean_absolute_error
-from scipy.stats import zscore
-
-
+from utils import linear_beta_schedule, construct_nx_from_adj, preprocess_dataset, gen_stats, calculate_mean_std, evaluation_metrics, z_score_norm
 
 
 from torch.utils.data import Subset
@@ -123,28 +119,6 @@ train_loader = DataLoader(trainset, batch_size=args.batch_size, shuffle=True)
 val_loader = DataLoader(validset, batch_size=args.batch_size, shuffle=False)
 test_loader = DataLoader(testset, batch_size=args.batch_size, shuffle=False)
 
-# Statistics
-def graph_statistics(G):
-    num_nodes = G.number_of_nodes()
-    num_edges = G.number_of_edges()
-    average_degree = sum(dict(G.degree()).values()) / num_nodes
-    num_triangles = sum(nx.triangles(G).values()) // 3
-    global_clustering_coefficient = nx.transitivity(G)
-    k_core = nx.k_core(G)
-    max_k_core = max(k_core.nodes())
-    partition = community_louvain.best_partition(G)
-    num_communities = len(set(partition.values()))
-
-    # Return the results in a list
-    return [
-        num_nodes,
-        num_edges,
-        average_degree,
-        num_triangles,
-        global_clustering_coefficient,
-        max_k_core,
-        num_communities
-    ]
 
 # Custom loss
 def custom_loss_fn(target_stats, generated_stats, weights):
@@ -294,10 +268,10 @@ denoise_model.eval()
 del train_loader
 
 
-# MAE on test set
-mae = 0.
-
 # Save to a CSV file
+
+ground_truth = []
+pred = []
 with open("outputs/output.csv", "w", newline="") as csvfile:
     writer = csv.writer(csvfile)
     # Write the header
@@ -322,9 +296,8 @@ with open("outputs/output.csv", "w", newline="") as csvfile:
             Gs_generated = construct_nx_from_adj(adj[i,:,:].detach().cpu().numpy())
             stat_x = stat_x.detach().cpu().numpy()
 
-            generated_stats  = np.array(graph_statistics(Gs_generated))
+            generated_stats  = np.array(gen_stats(Gs_generated))
 
-            mae += mean_absolute_error(zscore(stat_x), zscore(generated_stats))
 
             # Define a graph ID
             graph_id = graph_ids[i]
@@ -333,5 +306,17 @@ with open("outputs/output.csv", "w", newline="") as csvfile:
             edge_list_text = ", ".join([f"({u}, {v})" for u, v in Gs_generated.edges()])           
             # Write the graph ID and the full edge list as a single row
             writer.writerow([graph_id, edge_list_text])
+            ground_truth.append(stat_x)
+            pred.append(generated_stats)
 
-print(f"Mean square error : {mae/1000}")
+ground_truth, pred = np.array(ground_truth).squeeze(), np.array(pred).squeeze()
+
+mean, std = calculate_mean_std(ground_truth)
+mse, mae, norm_error = evaluation_metrics(ground_truth, pred)
+mse_all, mae_all, norm_error_all = z_score_norm(ground_truth, pred, mean, std)
+
+res = {"mse" : mse, "mae" : mae, "norm_error" : norm_error, "mse_all" : mse_all, "mae_all": mae_all, "norm_error_all": norm_error_all}
+
+print("Evaluation Results:")
+for key, value in res.items():
+    print(f"{key}: {value}")
