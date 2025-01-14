@@ -4,6 +4,7 @@ from model.autoencoder import VariationalAutoEncoder
 from model.cvae import CVGAE
 import argparse
 import torch
+import os
 
 parser = argparse.ArgumentParser(description='LatentPlots')
 
@@ -39,5 +40,8 @@ else:
 checkpoint = torch.load(args.model)
 model.load_state_dict(checkpoint['state_dict'])
 model.eval()
+
+if os.path.exists("visuals") == False:
+    os.makedirs("visuals")
 
 plot_latent(model, dataset, args.cond_idx, dim1 = 0, dim1 = 1, save_path = "visuals/latent_CVGAE.png")

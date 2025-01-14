@@ -7,6 +7,7 @@ import numpy as np
 from model.cvae import CVGAE
 from utils.data_processing import preprocess_dataset, get_stats_mean_std
 
+import os
 
 ###############################################################################
 
@@ -138,6 +139,8 @@ for epoch in range(args.max_epochs):
             'optimizer' : optimizer.state_dict(),
         }, 'models/cvgae.pth.tar')
 
+if os.path.exists("plots") == False:
+    os.makedirs("plots")
 
 # Plot the training and validation losses
 plt.figure(figsize=(10, 5))

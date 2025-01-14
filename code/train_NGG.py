@@ -13,6 +13,8 @@ from model.denoise_model import DenoiseNN, p_losses
 from utils.data_processing import preprocess_dataset
 from utils.noise_schedules import linear_beta_schedule
 
+import os
+
 ###############################################################################
 
 # Argument parser
@@ -233,6 +235,9 @@ for epoch in range(1, args.epochs_denoise+1):
             'optimizer' : optimizer.state_dict(),
         }, './models/denoise_model.pth.tar')
 
+
+if os.path.exists("plots") == False:
+    os.makedirs("plots")
 
 # Plot the training and validation losses
 plt.figure(figsize=(10, 5))
