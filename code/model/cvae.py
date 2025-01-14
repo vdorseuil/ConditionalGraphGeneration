@@ -52,8 +52,7 @@ class CVGAE(nn.Module):
         
         recon = F.l1_loss(adj, data.A, reduction='mean')
         kld = -0.5 * torch.mean(torch.sum(1 + logvar - mu.pow(2) - logvar.exp(), dim = 1), dim = 0)
-        thresh = torch.Tensor([.1]).to(self.device)
-        loss = recon + beta * torch.maximum(kld, thresh)
+        loss = recon + beta * kld
 
         return loss, recon, kld
     
