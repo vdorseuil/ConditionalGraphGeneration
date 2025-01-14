@@ -154,5 +154,5 @@ plt.plot(valid_kl_losses, label='Validation KL loss', color = 'red', linestyle='
 
 plt.legend()
 
-plt.show()
 plt.savefig('plots/CVGAE_losses.png')
+plt.show()

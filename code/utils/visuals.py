@@ -9,7 +9,7 @@ condition_names = ['n_edges', 'n_nodes', 'avg_degree', 'n_triangles', 'global_cl
 
 
 
-def plot_latent(model, dataloader, cond_idx, dim1 = 0, dim2 = 1):
+def plot_latent(model, dataloader, cond_idx, dim1 = 0, dim2 = 1, save_path = 'visuals/latent_representations.png'):
 
     model.eval()
     zs = []
@@ -36,4 +36,5 @@ def plot_latent(model, dataloader, cond_idx, dim1 = 0, dim2 = 1):
     plt.ylabel(f'z_{dim2}')
     plt.title(f'Latent representations vs condition {condition_names[cond_idx]}')
 
+    plt.savefig(save_path)
     plt.show()

@@ -3,6 +3,7 @@ import argparse
 import numpy as np
 from datetime import datetime
 import torch
+import matplotlib.pyplot as plt
 
 import torch.nn.functional as F
 from torch_geometric.loader import DataLoader
@@ -233,3 +234,20 @@ for epoch in range(1, args.epochs_denoise+1):
         }, './models/denoise_model.pth.tar')
 
 
+# Plot the training and validation losses
+plt.figure(figsize=(10, 5))
+plt.title('Training and Validation Losses')
+plt.xlabel('Epochs')
+plt.ylabel('Loss')
+
+plt.plot(train_losses, label='Training loss', color='blue')
+plt.plot(train_recon_losses, label='Training reconstruction loss', color = 'blue', linestyle='dashed')
+plt.plot(train_kl_losses, label='Training KL loss', color = 'blue', linestyle='dotted')
+plt.plot(val_losses, label='Validation loss', color = 'red')
+plt.plot(val_recon_losses, label='Validation reconstruction loss', color = 'red', linestyle='dashed')
+plt.plot(val_kl_losses, label='Validation KL loss', color = 'red', linestyle='dotted')
+
+plt.legend()
+
+plt.savefig('plots/NGG_losses.png')
+plt.show()
