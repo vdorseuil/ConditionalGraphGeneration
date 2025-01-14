@@ -6,7 +6,7 @@ import torch.nn.functional as F
 import scipy.sparse as sparse
 from torch_geometric.data import Data
 from tqdm import tqdm
-from extract_feats import extract_feats, extract_numbers
+from utils.extract_feats import extract_feats, extract_numbers
 
 
 def preprocess_dataset(dataset, n_max_nodes, spectral_emb_dim, permute=False):
@@ -266,3 +266,10 @@ def construct_nx_from_adj(adj):
             to_remove.append(node)
     G.remove_nodes_from(to_remove)
     return G
+
+
+def get_stats_mean_std(data_lst):
+    stats = torch.cat([data.stats for data in data_lst], dim=0)
+    stats_mean = stats.mean(dim=0)
+    stats_std = stats.std(dim=0)
+    return stats_mean, stats_std

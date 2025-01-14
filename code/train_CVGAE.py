@@ -1,11 +1,11 @@
 import argparse
-
+import matplotlib.pyplot as plt
 import torch
-
 from torch_geometric.loader import DataLoader
+import numpy as np
 
 from model.cvae import CVGAE
-from utils.data_processing import preprocess_dataset
+from utils.data_processing import preprocess_dataset, get_stats_mean_std
 
 
 ###############################################################################
@@ -20,7 +20,7 @@ parser = argparse.ArgumentParser(description='Configuration for the NeuralGraphG
 parser.add_argument('--lr', type=float, default=1e-3, help="Learning rate for the optimizer, typically a small float value (default: 0.001)")
 
 # Maximum number of epochs for training
-parser.add_argument('--max-epochs', type=int, default=200, help="Maximum number of epochs for training the model (default: 200)")
+parser.add_argument('--max-epochs', type=int, default=1000, help="Maximum number of epochs for training the model (default: 200)")
 
 # Batch size for training
 parser.add_argument('--batch-size', type=int, default=256, help="Batch size for training, controlling the number of samples per gradient update (default: 256)")
@@ -69,10 +69,21 @@ train_loader = DataLoader(trainset, batch_size=args.batch_size, shuffle=True)
 val_loader = DataLoader(validset, batch_size=args.batch_size, shuffle=False)
 test_loader = DataLoader(testset, batch_size=args.batch_size, shuffle=False)
 
-cvgae = CVGAE(input_dim = args.spectral_emb_dim+1, hidden_dim_enc = args.hidden_dim_encoder, hidden_dim_dec = args.hidden_dim_decoder, latent_dim = args.latent_dim, n_layers_enc = args.n_layers_encoder, n_layers_dec = args.n_layers_decoder, n_max_nodes = args.n_max_nodes, n_cond = args.n_condition, stats_mean = trainset.stats_mean, stats_std = trainset.stats_std).to(device)
+stats_mean, stats_std = get_stats_mean_std(trainset)
+
+cvgae = CVGAE(input_dim = args.spectral_emb_dim+1, hidden_dim_enc = args.hidden_dim_encoder, hidden_dim_dec = args.hidden_dim_decoder, latent_dim = args.latent_dim, n_layers_enc = args.n_layers_encoder, n_layers_dec = args.n_layers_decoder, n_max_nodes = args.n_max_nodes, n_cond = args.n_condition, stats_mean = stats_mean, stats_std = stats_std).to(device)
 
 optimizer = torch.optim.Adam(cvgae.parameters(), lr=args.lr)
 
+
+train_losses = []
+train_recon_losses = []
+train_kl_losses = []
+valid_losses = []
+valid_recon_losses = []
+valid_kl_losses = []
+
+best_val_loss = np.inf
 
 for epoch in range(args.max_epochs):
     
@@ -113,8 +124,35 @@ for epoch in range(args.max_epochs):
 
     print(f'Epoch {epoch+1}/{args.max_epochs}, Beta: {beta:.4f} Train Loss: {train_loss:.4f}, Train Recon Loss: {train_recon_loss:.4f}, Train KL Loss: {train_kl_loss:.4f}, Valid Loss: {valid_loss:.4f}, Valid Recon Loss: {valid_recon_loss:.4f}, Valid KL Loss: {valid_kl_loss:.4f}')
 
+    train_losses.append(train_loss)
+    train_recon_losses.append(train_recon_loss)
+    train_kl_losses.append(train_kl_loss)
+    valid_losses.append(valid_loss)
+    valid_recon_losses.append(valid_recon_loss)
+    valid_kl_losses.append(valid_kl_loss)
 
-# Save the model
-torch.save(cvgae.state_dict(), './models/cvae.pth.tar')
+    if valid_loss < best_val_loss:
+        best_val_loss = valid_loss
+        torch.save({
+            'state_dict': cvgae.state_dict(),
+            'optimizer' : optimizer.state_dict(),
+        }, 'models/cvgae.pth.tar')
+
 
 # Plot the training and validation losses
+plt.figure(figsize=(10, 5))
+plt.title('Training and Validation Losses')
+plt.xlabel('Epochs')
+plt.ylabel('Loss')
+
+plt.plot(train_losses, label='Training loss', color='blue')
+plt.plot(train_recon_losses, label='Training reconstruction loss', color = 'blue', linestyle='dashed')
+plt.plot(train_kl_losses, label='Training KL loss', color = 'blue', linestyle='dotted')
+plt.plot(valid_losses, label='Validation loss', color = 'red')
+plt.plot(valid_recon_losses, label='Validation reconstruction loss', color = 'red', linestyle='dashed')
+plt.plot(valid_kl_losses, label='Validation KL loss', color = 'red', linestyle='dotted')
+
+plt.legend()
+
+plt.show()
+plt.savefig('plots/CVGAE_losses.png')

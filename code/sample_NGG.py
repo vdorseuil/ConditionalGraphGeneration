@@ -1,6 +1,5 @@
 from torch_geometric.loader import DataLoader
 import torch
-import numpy as np
 from tqdm import tqdm
 import csv
 import argparse
@@ -9,9 +8,6 @@ from model.denoise_model import DenoiseNN, sample
 from model.autoencoder import VariationalAutoEncoder
 from utils.data_processing import preprocess_dataset, construct_nx_from_adj
 from utils.noise_schedules import linear_beta_schedule
-
-np.random.seed(42)
-torch.manual_seed(42)
 
 ###############################################################################
 

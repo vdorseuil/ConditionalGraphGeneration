@@ -12,9 +12,6 @@ from model.denoise_model import DenoiseNN, p_losses
 from utils.data_processing import preprocess_dataset
 from utils.noise_schedules import linear_beta_schedule
 
-np.random.seed(42)
-torch.manual_seed(42)
-
 ###############################################################################
 
 # Argument parser
@@ -33,22 +30,22 @@ parser.add_argument('--dropout', type=float, default=0.0, help="Dropout rate (fr
 parser.add_argument('--batch-size', type=int, default=256, help="Batch size for training, controlling the number of samples per gradient update (default: 256)")
 
 # Number of epochs for the autoencoder training
-parser.add_argument('--epochs-autoencoder', type=int, default=200, help="Number of training epochs for the autoencoder (default: 200)")
+parser.add_argument('--epochs-autoencoder', type=int, default=1000, help="Number of training epochs for the autoencoder (default: 200)")
 
 # Hidden dimension size for the encoder network
-parser.add_argument('--hidden-dim-encoder', type=int, default=64, help="Hidden dimension size for encoder layers (default: 64)")
+parser.add_argument('--hidden-dim-encoder', type=int, default=256, help="Hidden dimension size for encoder layers (default: 64)")
 
 # Hidden dimension size for the decoder network
 parser.add_argument('--hidden-dim-decoder', type=int, default=256, help="Hidden dimension size for decoder layers (default: 256)")
 
 # Dimensionality of the latent space
-parser.add_argument('--latent-dim', type=int, default=32, help="Dimensionality of the latent space in the autoencoder (default: 32)")
+parser.add_argument('--latent-dim', type=int, default=2, help="Dimensionality of the latent space in the autoencoder (default: 32)")
 
 # Maximum number of nodes of graphs
 parser.add_argument('--n-max-nodes', type=int, default=50, help="Possible maximum number of nodes in graphs (default: 50)")
 
 # Number of layers in the encoder network
-parser.add_argument('--n-layers-encoder', type=int, default=2, help="Number of layers in the encoder network (default: 2)")
+parser.add_argument('--n-layers-encoder', type=int, default=3, help="Number of layers in the encoder network (default: 2)")
 
 # Number of layers in the decoder network
 parser.add_argument('--n-layers-decoder', type=int, default=3, help="Number of layers in the decoder network (default: 3)")
@@ -67,12 +64,6 @@ parser.add_argument('--hidden-dim-denoise', type=int, default=512, help="Hidden 
 
 # Number of layers in the denoising model
 parser.add_argument('--n-layers_denoise', type=int, default=3, help="Number of layers in the denoising model (default: 3)")
-
-# Flag to toggle training of the autoencoder (VGAE)
-parser.add_argument('--train-autoencoder', action='store_true', default=False, help="Flag to enable/disable autoencoder (VGAE) training (default: enabled)")
-
-# Flag to toggle training of the diffusion-based denoising model
-parser.add_argument('--train-denoiser', action='store_true', default=False, help="Flag to enable/disable denoiser training (default: enabled)")
 
 # Dimensionality of conditioning vectors for conditional generation
 parser.add_argument('--dim-condition', type=int, default=128, help="Dimensionality of conditioning vectors for conditional generation (default: 128)")
@@ -109,60 +100,71 @@ optimizer = torch.optim.Adam(autoencoder.parameters(), lr=args.lr)
 scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=500, gamma=0.1)
 
 
+train_losses = []
+train_recon_losses = []
+train_kl_losses = []
+val_losses = []
+val_recon_losses = []
+val_kl_losses = []
+
 # Train VGAE model
-if args.train_autoencoder:
-    best_val_loss = np.inf
-    for epoch in range(1, args.epochs_autoencoder+1):
-        autoencoder.train()
-        train_loss_all = 0
-        train_count = 0
-        train_loss_all_recon = 0
-        train_loss_all_kld = 0
-        cnt_train=0
+best_val_loss = np.inf
+for epoch in range(1, args.epochs_autoencoder+1):
+    autoencoder.train()
+    train_loss_all = 0
+    train_count = 0
+    train_loss_all_recon = 0
+    train_loss_all_kld = 0
+    cnt_train=0
 
-        for data in train_loader:
-            data = data.to(device)
-            optimizer.zero_grad()
-            loss, recon, kld  = autoencoder.loss_function(data)
-            train_loss_all_recon += recon.item()
-            train_loss_all_kld += kld.item()
-            cnt_train+=1
-            loss.backward()
-            train_loss_all += loss.item()
-            train_count += torch.max(data.batch)+1
-            optimizer.step()
-            
-        autoencoder.eval()
-        val_loss_all = 0
-        val_count = 0
-        cnt_val = 0
-        val_loss_all_recon = 0
-        val_loss_all_kld = 0
+    for data in train_loader:
+        data = data.to(device)
+        optimizer.zero_grad()
+        loss, recon, kld  = autoencoder.loss_function(data)
+        train_loss_all_recon += recon.item()
+        train_loss_all_kld += kld.item()
+        cnt_train+=1
+        loss.backward()
+        train_loss_all += loss.item()
+        train_count += torch.max(data.batch)+1
+        optimizer.step()
+        
+    autoencoder.eval()
+    val_loss_all = 0
+    val_count = 0
+    cnt_val = 0
+    val_loss_all_recon = 0
+    val_loss_all_kld = 0
 
-        for data in val_loader:
-            data = data.to(device)
-            loss, recon, kld  = autoencoder.loss_function(data)
-            val_loss_all_recon += recon.item()
-            val_loss_all_kld += kld.item()
-            val_loss_all += loss.item()
-            cnt_val+=1
-            val_count += torch.max(data.batch)+1
+    for data in val_loader:
+        data = data.to(device)
+        loss, recon, kld  = autoencoder.loss_function(data)
+        val_loss_all_recon += recon.item()
+        val_loss_all_kld += kld.item()
+        val_loss_all += loss.item()
+        cnt_val+=1
+        val_count += torch.max(data.batch)+1
 
-        if epoch % 1 == 0:
-            dt_t = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
-            print('{} Epoch: {:04d}, Train Loss: {:.5f}, Train Reconstruction Loss: {:.2f}, Train KLD Loss: {:.2f}, Val Loss: {:.5f}, Val Reconstruction Loss: {:.2f}, Val KLD Loss: {:.2f}'.format(dt_t,epoch, train_loss_all/cnt_train, train_loss_all_recon/cnt_train, train_loss_all_kld/cnt_train, val_loss_all/cnt_val, val_loss_all_recon/cnt_val, val_loss_all_kld/cnt_val))
-            
-        scheduler.step()
+    if epoch % 1 == 0:
+        dt_t = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+        print('{} Epoch: {:04d}, Train Loss: {:.5f}, Train Reconstruction Loss: {:.2f}, Train KLD Loss: {:.2f}, Val Loss: {:.5f}, Val Reconstruction Loss: {:.2f}, Val KLD Loss: {:.2f}'.format(dt_t,epoch, train_loss_all/cnt_train, train_loss_all_recon/cnt_train, train_loss_all_kld/cnt_train, val_loss_all/cnt_val, val_loss_all_recon/cnt_val, val_loss_all_kld/cnt_val))
+        
+    scheduler.step()
 
-        if best_val_loss >= val_loss_all:
-            best_val_loss = val_loss_all
-            torch.save({
-                'state_dict': autoencoder.state_dict(),
-                'optimizer' : optimizer.state_dict(),
-            }, './models/autoencoder.pth.tar')
-else:
-    checkpoint = torch.load('./models/autoencoder.pth.tar')
-    autoencoder.load_state_dict(checkpoint['state_dict'])
+    train_losses.append(train_loss_all/cnt_train)
+    train_recon_losses.append(train_loss_all_recon/cnt_train)
+    train_kl_losses.append(train_loss_all_kld/cnt_train)
+    val_losses.append(val_loss_all/cnt_val)
+    val_recon_losses.append(val_loss_all_recon/cnt_val)
+    val_kl_losses.append(val_loss_all_kld/cnt_val)
+
+    if best_val_loss >= val_loss_all:
+        best_val_loss = val_loss_all
+        torch.save({
+            'state_dict': autoencoder.state_dict(),
+            'optimizer' : optimizer.state_dict(),
+        }, './models/autoencoder.pth.tar')
+
 
 autoencoder.eval()
 
@@ -190,46 +192,44 @@ optimizer = torch.optim.Adam(denoise_model.parameters(), lr=args.lr)
 scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=500, gamma=0.1)
 
 # Train denoising model
-if args.train_denoiser:
-    best_val_loss = np.inf
-    for epoch in range(1, args.epochs_denoise+1):
-        denoise_model.train()
-        train_loss_all = 0
-        train_count = 0
-        for data in train_loader:
-            data = data.to(device)
-            optimizer.zero_grad()
-            x_g = autoencoder.encode(data)
-            t = torch.randint(0, args.timesteps, (x_g.size(0),), device=device).long()
-            loss = p_losses(denoise_model, x_g, t, data.stats, sqrt_alphas_cumprod, sqrt_one_minus_alphas_cumprod, loss_type="huber")
-            loss.backward()
-            train_loss_all += x_g.size(0) * loss.item()
-            train_count += x_g.size(0)
-            optimizer.step()
+best_val_loss = np.inf
+for epoch in range(1, args.epochs_denoise+1):
+    denoise_model.train()
+    train_loss_all = 0
+    train_count = 0
+    for data in train_loader:
+        data = data.to(device)
+        optimizer.zero_grad()
+        x_g = autoencoder.encode(data)
+        t = torch.randint(0, args.timesteps, (x_g.size(0),), device=device).long()
+        loss = p_losses(denoise_model, x_g, t, data.stats, sqrt_alphas_cumprod, sqrt_one_minus_alphas_cumprod, loss_type="huber")
+        loss.backward()
+        train_loss_all += x_g.size(0) * loss.item()
+        train_count += x_g.size(0)
+        optimizer.step()
 
-        denoise_model.eval()
-        val_loss_all = 0
-        val_count = 0
-        for data in val_loader:
-            data = data.to(device)
-            x_g = autoencoder.encode(data)
-            t = torch.randint(0, args.timesteps, (x_g.size(0),), device=device).long()
-            loss = p_losses(denoise_model, x_g, t, data.stats, sqrt_alphas_cumprod, sqrt_one_minus_alphas_cumprod, loss_type="huber")
-            val_loss_all += x_g.size(0) * loss.item()
-            val_count += x_g.size(0)
+    denoise_model.eval()
+    val_loss_all = 0
+    val_count = 0
+    for data in val_loader:
+        data = data.to(device)
+        x_g = autoencoder.encode(data)
+        t = torch.randint(0, args.timesteps, (x_g.size(0),), device=device).long()
+        loss = p_losses(denoise_model, x_g, t, data.stats, sqrt_alphas_cumprod, sqrt_one_minus_alphas_cumprod, loss_type="huber")
+        val_loss_all += x_g.size(0) * loss.item()
+        val_count += x_g.size(0)
 
-        if epoch % 5 == 0:
-            dt_t = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
-            print('{} Epoch: {:04d}, Train Loss: {:.5f}, Val Loss: {:.5f}'.format(dt_t, epoch, train_loss_all/train_count, val_loss_all/val_count))
+    if epoch % 5 == 0:
+        dt_t = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+        print('{} Epoch: {:04d}, Train Loss: {:.5f}, Val Loss: {:.5f}'.format(dt_t, epoch, train_loss_all/train_count, val_loss_all/val_count))
 
-        scheduler.step()
+    scheduler.step()
 
-        if best_val_loss >= val_loss_all:
-            best_val_loss = val_loss_all
-            torch.save({
-                'state_dict': denoise_model.state_dict(),
-                'optimizer' : optimizer.state_dict(),
-            }, './models/denoise_model.pth.tar')
-else:
-    checkpoint = torch.load('./models/denoise_model.pth.tar')
-    denoise_model.load_state_dict(checkpoint['state_dict'])
+    if best_val_loss >= val_loss_all:
+        best_val_loss = val_loss_all
+        torch.save({
+            'state_dict': denoise_model.state_dict(),
+            'optimizer' : optimizer.state_dict(),
+        }, './models/denoise_model.pth.tar')
+
+
