@@ -1,44 +1,21 @@
 import argparse
-import os
-import random
-import scipy as sp
-import pickle
 
-import shutil
-import csv
-import ast
-import community as community_louvain
-
-
-import scipy.sparse as sparse
-from tqdm import tqdm
-from torch import Tensor
-import networkx as nx
 import numpy as np
 from datetime import datetime
 import torch
-import torch.nn as nn
-from torch_geometric.data import Data
 
 import torch.nn.functional as F
 from torch_geometric.loader import DataLoader
 
-from autoencoder import VariationalAutoEncoder
-from denoise_model import DenoiseNN, p_losses, sample
-from utils import linear_beta_schedule, construct_nx_from_adj, preprocess_dataset, gen_stats, calculate_mean_std, evaluation_metrics, z_score_norm
+from model.autoencoder import VariationalAutoEncoder
+from model.denoise_model import DenoiseNN, p_losses
+from utils.data_processing import preprocess_dataset
+from utils.noise_schedules import linear_beta_schedule
 
+np.random.seed(42)
+torch.manual_seed(42)
 
-from torch.utils.data import Subset
-np.random.seed(13)
-
-"""
-Parses command line arguments for configuring the NeuralGraphGenerator model. This includes
-settings for learning rates, architecture dimensions, training epochs, dropout rates, and 
-parameters specific to the autoencoder (VGAE) and diffusion-based denoising model components.
-
-Returns:
-    argparse.Namespace: Parsed arguments as attributes for easy configuration of the model.
-"""
+###############################################################################
 
 # Argument parser
 parser = argparse.ArgumentParser(description='NeuralGraphGenerator')
@@ -105,6 +82,10 @@ parser.add_argument('--n-condition', type=int, default=7, help="Number of distin
 
 args = parser.parse_args()
 
+###############################################################################
+
+
+
 device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 
 # preprocess train data, validation data and test data. Only once for the first time that you run the code. Then the appropriate .pt files will be saved and loaded.
@@ -119,16 +100,6 @@ train_loader = DataLoader(trainset, batch_size=args.batch_size, shuffle=True)
 val_loader = DataLoader(validset, batch_size=args.batch_size, shuffle=False)
 test_loader = DataLoader(testset, batch_size=args.batch_size, shuffle=False)
 
-
-# Custom loss
-def custom_loss_fn(target_stats, generated_stats, weights):
-    """
-    Custom loss function to penalize deviations in graph statistics.
-    """
-    loss = 0
-    for key, weight in weights.items():
-        loss += weight * torch.abs(target_stats[key] - generated_stats[key])
-    return loss
 
 # initialize VGAE model
 autoencoder = VariationalAutoEncoder(args.spectral_emb_dim+1, args.hidden_dim_encoder, args.hidden_dim_decoder, args.latent_dim, args.n_layers_encoder, args.n_layers_decoder, args.n_max_nodes).to(device)
@@ -262,61 +233,3 @@ if args.train_denoiser:
 else:
     checkpoint = torch.load('./models/denoise_model.pth.tar')
     denoise_model.load_state_dict(checkpoint['state_dict'])
-
-denoise_model.eval()
-
-del train_loader
-
-
-# Save to a CSV file
-
-ground_truth = []
-pred = []
-with open("outputs/output.csv", "w", newline="") as csvfile:
-    writer = csv.writer(csvfile)
-    # Write the header
-    writer.writerow(["graph_id", "edge_list"])
-    for k, data in enumerate(tqdm(test_loader, desc='Processing test set',)):
-        data = data.to(device)
-        
-        stat = data.stats
-        bs = stat.size(0)
-
-        graph_ids = data.filename
-
-        samples = sample(denoise_model, data.stats, latent_dim=args.latent_dim, timesteps=args.timesteps, betas=betas, batch_size=bs)
-        x_sample = samples[-1]
-        adj = autoencoder.decode_mu(x_sample)
-        stat_d = torch.reshape(stat, (-1, args.n_condition))
-    
-
-        for i in range(stat.size(0)):
-            stat_x = stat_d[i]
-
-            Gs_generated = construct_nx_from_adj(adj[i,:,:].detach().cpu().numpy())
-            stat_x = stat_x.detach().cpu().numpy()
-
-            generated_stats  = np.array(gen_stats(Gs_generated))
-
-
-            # Define a graph ID
-            graph_id = graph_ids[i]
-
-            # Convert the edge list to a single string
-            edge_list_text = ", ".join([f"({u}, {v})" for u, v in Gs_generated.edges()])           
-            # Write the graph ID and the full edge list as a single row
-            writer.writerow([graph_id, edge_list_text])
-            ground_truth.append(stat_x)
-            pred.append(generated_stats)
-
-ground_truth, pred = np.array(ground_truth).squeeze(), np.array(pred).squeeze()
-
-mean, std = calculate_mean_std(ground_truth)
-mse, mae, norm_error = evaluation_metrics(ground_truth, pred)
-mse_all, mae_all, norm_error_all = z_score_norm(ground_truth, pred, mean, std)
-
-res = {"mse" : mse, "mae" : mae, "norm_error" : norm_error, "mse_all" : mse_all, "mae_all": mae_all, "norm_error_all": norm_error_all}
-
-print("Evaluation Results:")
-for key, value in res.items():
-    print(f"{key}: {value}")

@@ -6,7 +6,8 @@ import torch.nn.functional as F
 import scipy.sparse as sparse
 from torch_geometric.data import Data
 from tqdm import tqdm
-from extract_feats import extract_feats
+from extract_feats import extract_feats, extract_numbers
+
 
 def preprocess_dataset(dataset, n_max_nodes, spectral_emb_dim, permute=False):
     """
@@ -254,6 +255,9 @@ def preprocess_dataset(dataset, n_max_nodes, spectral_emb_dim, permute=False):
             print(f"Dataset {filename} saved")
 
         return data_lst
+    
+
+
 def construct_nx_from_adj(adj):
     G = nx.from_numpy_array(adj, create_using=nx.Graph)
     to_remove = []
@@ -262,77 +266,3 @@ def construct_nx_from_adj(adj):
             to_remove.append(node)
     G.remove_nodes_from(to_remove)
     return G
-
-
-
-def handle_nan(x):
-    if math.isnan(x):
-        return float(-100)
-    return x
-
-
-
-
-def masked_instance_norm2D(x: torch.Tensor, mask: torch.Tensor, eps: float = 1e-5):
-    """
-    x: [batch_size (N), num_objects (L), num_objects (L), features(C)]
-    mask: [batch_size (N), num_objects (L), num_objects (L), 1]
-    """
-    mask = mask.view(x.size(0), x.size(1), x.size(2), 1).expand_as(x)
-    mean = (torch.sum(x * mask, dim=[1,2]) / torch.sum(mask, dim=[1,2]))   # (N,C)
-    var_term = ((x - mean.unsqueeze(1).unsqueeze(1).expand_as(x)) * mask)**2  # (N,L,L,C)
-    var = (torch.sum(var_term, dim=[1,2]) / torch.sum(mask, dim=[1,2]))  # (N,C)
-    mean = mean.unsqueeze(1).unsqueeze(1).expand_as(x)  # (N, L, L, C)
-    var = var.unsqueeze(1).unsqueeze(1).expand_as(x)    # (N, L, L, C)
-    instance_norm = (x - mean) / torch.sqrt(var + eps)   # (N, L, L, C)
-    instance_norm = instance_norm * mask
-    return instance_norm
-
-
-def masked_layer_norm2D(x: torch.Tensor, mask: torch.Tensor, eps: float = 1e-5):
-    """
-    x: [batch_size (N), num_objects (L), num_objects (L), features(C)]
-    mask: [batch_size (N), num_objects (L), num_objects (L), 1]
-    """
-    mask = mask.view(x.size(0), x.size(1), x.size(2), 1).expand_as(x)
-    mean = torch.sum(x * mask, dim=[3,2,1]) / torch.sum(mask, dim=[3,2,1])   # (N)
-    var_term = ((x - mean.view(-1,1,1,1).expand_as(x)) * mask)**2  # (N,L,L,C)
-    var = (torch.sum(var_term, dim=[3,2,1]) / torch.sum(mask, dim=[3,2,1]))  # (N)
-    mean = mean.view(-1,1,1,1).expand_as(x)  # (N, L, L, C)
-    var = var.view(-1,1,1,1).expand_as(x)    # (N, L, L, C)
-    layer_norm = (x - mean) / torch.sqrt(var + eps)   # (N, L, L, C)
-    layer_norm = layer_norm * mask
-    return layer_norm
-
-
-def cosine_beta_schedule(timesteps, s=0.008):
-    """
-    cosine schedule as proposed in https://arxiv.org/abs/2102.09672
-    """
-    steps = timesteps + 1
-    x = torch.linspace(0, timesteps, steps)
-    alphas_cumprod = torch.cos(((x / timesteps) + s) / (1 + s) * torch.pi * 0.5) ** 2
-    alphas_cumprod = alphas_cumprod / alphas_cumprod[0]
-    betas = 1 - (alphas_cumprod[1:] / alphas_cumprod[:-1])
-    return torch.clip(betas, 0.0001, 0.9999)
-
-
-def linear_beta_schedule(timesteps):
-    beta_start = 0.0001
-    beta_end = 0.02
-    return torch.linspace(beta_start, beta_end, timesteps)
-
-
-def quadratic_beta_schedule(timesteps):
-    beta_start = 0.0001
-    beta_end = 0.02
-    return torch.linspace(beta_start**0.5, beta_end**0.5, timesteps) ** 2
-
-
-def sigmoid_beta_schedule(timesteps):
-    beta_start = 0.0001
-    beta_end = 0.02
-    betas = torch.linspace(-6, 6, timesteps)
-    return torch.sigmoid(betas) * (beta_end - beta_start) + beta_start
-
-
