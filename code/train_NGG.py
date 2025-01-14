@@ -100,7 +100,6 @@ autoencoder = VariationalAutoEncoder(args.spectral_emb_dim+1, args.hidden_dim_en
 
 
 optimizer = torch.optim.Adam(autoencoder.parameters(), lr=args.lr)
-scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=500, gamma=0.1)
 
 
 train_losses = []
@@ -152,7 +151,6 @@ for epoch in range(1, args.epochs_autoencoder+1):
         dt_t = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
         print('{} Epoch: {:04d}, Train Loss: {:.5f}, Train Reconstruction Loss: {:.2f}, Train KLD Loss: {:.2f}, Val Loss: {:.5f}, Val Reconstruction Loss: {:.2f}, Val KLD Loss: {:.2f}'.format(dt_t,epoch, train_loss_all/cnt_train, train_loss_all_recon/cnt_train, train_loss_all_kld/cnt_train, val_loss_all/cnt_val, val_loss_all_recon/cnt_val, val_loss_all_kld/cnt_val))
         
-    scheduler.step()
 
     train_losses.append(train_loss_all/cnt_train)
     train_recon_losses.append(train_loss_all_recon/cnt_train)
@@ -192,7 +190,6 @@ posterior_variance = betas * (1. - alphas_cumprod_prev) / (1. - alphas_cumprod)
 # initialize denoising model
 denoise_model = DenoiseNN(input_dim=args.latent_dim, hidden_dim=args.hidden_dim_denoise, n_layers=args.n_layers_denoise, n_cond=args.n_condition, d_cond=args.dim_condition).to(device)
 optimizer = torch.optim.Adam(denoise_model.parameters(), lr=args.lr)
-scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=500, gamma=0.1)
 
 # Train denoising model
 best_val_loss = np.inf
@@ -225,8 +222,6 @@ for epoch in range(1, args.epochs_denoise+1):
     if epoch % 5 == 0:
         dt_t = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
         print('{} Epoch: {:04d}, Train Loss: {:.5f}, Val Loss: {:.5f}'.format(dt_t, epoch, train_loss_all/train_count, val_loss_all/val_count))
-
-    scheduler.step()
 
     if best_val_loss >= val_loss_all:
         best_val_loss = val_loss_all

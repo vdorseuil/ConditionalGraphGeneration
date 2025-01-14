@@ -1,10 +1,4 @@
-import os
-from tqdm import tqdm
-import random
 import re
-
-random.seed(32)
-
 
 def extract_numbers(text):
     # Use regular expression to find integers and floats
