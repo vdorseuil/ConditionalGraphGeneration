@@ -3,11 +3,14 @@ import torch
 from tqdm import tqdm
 import csv
 import argparse
+import os
 
 from model.denoise_model import DenoiseNN, sample
 from model.autoencoder import VariationalAutoEncoder
 from utils.data_processing import preprocess_dataset, construct_nx_from_adj
 from utils.noise_schedules import linear_beta_schedule
+from utils.eval import read_output, MAE
+
 
 ###############################################################################
 
@@ -68,19 +71,22 @@ test_loader = DataLoader(testset, batch_size=args.batch_size, shuffle=False)
 
 
 autoencoder = VariationalAutoEncoder(args.spectral_emb_dim+1, args.hidden_dim_encoder, args.hidden_dim_decoder, args.latent_dim, args.n_layers_encoder, args.n_layers_decoder, args.n_max_nodes).to(device)
-checkpoint = torch.load('./models/autoencoder.pth.tar')
+checkpoint = torch.load('./models/autoencoder_smallbeta.pth.tar')
 autoencoder.load_state_dict(checkpoint['state_dict'])
 autoencoder.eval()
 
 denoise_model = DenoiseNN(input_dim=args.latent_dim, hidden_dim=args.hidden_dim_denoise, n_layers=args.n_layers_denoise, n_cond=args.n_condition, d_cond=args.dim_condition).to(device)
-checkpoint = torch.load('./models/denoise_model.pth.tar')
+checkpoint = torch.load('./models/denoise_model_smallbeta.pth.tar')
 denoise_model.load_state_dict(checkpoint['state_dict'])
 denoise_model.eval()
 
 betas = linear_beta_schedule(timesteps=args.timesteps)
 
+if os.path.exists("outputs") == False:
+    os.makedirs("outputs")
 
-with open("outputs/output_NGG.csv", "w", newline="") as csvfile:
+
+with open("outputs/output_NGG_smallbeta.csv", "w", newline="") as csvfile:
     writer = csv.writer(csvfile)
     # Write the header
     writer.writerow(["graph_id", "edge_list"])
@@ -111,3 +117,8 @@ with open("outputs/output_NGG.csv", "w", newline="") as csvfile:
             edge_list_text = ", ".join([f"({u}, {v})" for u, v in Gs_generated.edges()])           
             # Write the graph ID and the full edge list as a single row
             writer.writerow([graph_id, edge_list_text])
+
+
+Gs = read_output("outputs/output_NGG_smallbeta.csv")
+mae = MAE(Gs, testset)
+print(f"Mean absolute error of graph features: {mae:.2f}")

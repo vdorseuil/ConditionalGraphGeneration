@@ -3,19 +3,23 @@ import numpy as np
 
 import torch
 
-condition_names = ['n_edges', 'n_nodes', 'avg_degree', 'n_triangles', 'global_clustering_coeff', 'max_k_core', 'n_communities']
+condition_names = ['n_nodes', 'n_edges', 'avg_degree', 'n_triangles', 'global_clustering_coeff', 'max_k_core', 'n_communities']
 
-def plot_latent(model, dataloader, cond_idx, dim1 = 0, dim2 = 1, save_path = 'visuals/latent_representations.png'):
+def plot_latent(model, model_type, dataloader, cond_idx, dim1 = 0, dim2 = 1, save_path = 'visuals/latent_representations.png'):
 
     model.eval()
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     zs = []
     stats = []
 
     with torch.no_grad():
         for data in dataloader:
-            data = data.to(model.device)
+            data = data.to(device)
 
-            z, _, _ = model.encode(data)
+            if model_type == "cvgae":
+                z, _, _ = model.encode(data)
+            else:
+                z = model.encode(data)
             z = z.cpu().numpy()
             zs.append(z)
 

@@ -33,7 +33,7 @@ parser.add_argument('--dropout', type=float, default=0.0, help="Dropout rate (fr
 parser.add_argument('--batch-size', type=int, default=256, help="Batch size for training, controlling the number of samples per gradient update (default: 256)")
 
 # Number of epochs for the autoencoder training
-parser.add_argument('--epochs-autoencoder', type=int, default=1000, help="Number of training epochs for the autoencoder (default: 200)")
+parser.add_argument('--epochs-autoencoder', type=int, default=200, help="Number of training epochs for the autoencoder (default: 200)")
 
 # Hidden dimension size for the encoder network
 parser.add_argument('--hidden-dim-encoder', type=int, default=256, help="Hidden dimension size for encoder layers (default: 64)")
@@ -73,6 +73,9 @@ parser.add_argument('--dim-condition', type=int, default=128, help="Dimensionali
 
 # Number of conditions used in conditional vector (number of properties)
 parser.add_argument('--n-condition', type=int, default=7, help="Number of distinct condition properties used in conditional vector (default: 7)")
+
+# Beta value for the VAE loss
+parser.add_argument('--beta', type=float, default=0.05, help="Beta value for the VAE loss (default: 1.0)")
 
 args = parser.parse_args()
 
@@ -122,7 +125,7 @@ for epoch in range(1, args.epochs_autoencoder+1):
     for data in train_loader:
         data = data.to(device)
         optimizer.zero_grad()
-        loss, recon, kld  = autoencoder.loss_function(data)
+        loss, recon, kld  = autoencoder.loss_function(data, beta = args.beta)
         train_loss_all_recon += recon.item()
         train_loss_all_kld += kld.item()
         cnt_train+=1
@@ -140,7 +143,7 @@ for epoch in range(1, args.epochs_autoencoder+1):
 
     for data in val_loader:
         data = data.to(device)
-        loss, recon, kld  = autoencoder.loss_function(data)
+        loss, recon, kld  = autoencoder.loss_function(data, beta = args.beta)
         val_loss_all_recon += recon.item()
         val_loss_all_kld += kld.item()
         val_loss_all += loss.item()
@@ -161,10 +164,12 @@ for epoch in range(1, args.epochs_autoencoder+1):
 
     if best_val_loss >= val_loss_all:
         best_val_loss = val_loss_all
+        if os.path.exists("models") == False:
+            os.makedirs("models")
         torch.save({
             'state_dict': autoencoder.state_dict(),
             'optimizer' : optimizer.state_dict(),
-        }, './models/autoencoder.pth.tar')
+        }, './models/autoencoder_smallbeta.pth.tar')
 
 
 autoencoder.eval()
@@ -228,7 +233,7 @@ for epoch in range(1, args.epochs_denoise+1):
         torch.save({
             'state_dict': denoise_model.state_dict(),
             'optimizer' : optimizer.state_dict(),
-        }, './models/denoise_model.pth.tar')
+        }, './models/denoise_model_smallbeta.pth.tar')
 
 
 if os.path.exists("plots") == False:
@@ -239,15 +244,28 @@ plt.figure(figsize=(10, 5))
 plt.title('Training and Validation Losses')
 plt.xlabel('Epochs')
 plt.ylabel('Loss')
-
 plt.plot(train_losses, label='Training loss', color='blue')
-plt.plot(train_recon_losses, label='Training reconstruction loss', color = 'blue', linestyle='dashed')
-plt.plot(train_kl_losses, label='Training KL loss', color = 'blue', linestyle='dotted')
 plt.plot(val_losses, label='Validation loss', color = 'red')
-plt.plot(val_recon_losses, label='Validation reconstruction loss', color = 'red', linestyle='dashed')
-plt.plot(val_kl_losses, label='Validation KL loss', color = 'red', linestyle='dotted')
-
 plt.legend()
+plt.savefig('plots/NGG_losses_smallbeta.png')
 
-plt.savefig('plots/NGG_losses.png')
-plt.show()
+
+plt.figure(figsize=(10, 5))
+plt.title('Training and Validation Losses')
+plt.xlabel('Epochs')
+plt.ylabel('Loss')
+plt.plot(train_recon_losses, label='Training reconstruction loss', color = 'blue')
+plt.plot(val_recon_losses, label='Validation reconstruction loss', color = 'red')
+plt.legend()
+plt.savefig('plots/NGG_recon_losses_smallbeta.png')
+
+
+plt.figure(figsize=(10, 5))
+plt.title('Training and Validation Losses')
+plt.xlabel('Epochs')
+plt.ylabel('Loss')
+# plt.ylim([0.0, 1.0])
+plt.plot(train_kl_losses, label='Training KL loss', color = 'blue')
+plt.plot(val_kl_losses, label='Validation KL loss', color = 'red')
+plt.legend()
+plt.savefig('plots/NGG_kl_losses_smallbeta.png')

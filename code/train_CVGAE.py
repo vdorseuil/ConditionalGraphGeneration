@@ -21,7 +21,7 @@ parser = argparse.ArgumentParser(description='Configuration for the NeuralGraphG
 parser.add_argument('--lr', type=float, default=1e-3, help="Learning rate for the optimizer, typically a small float value (default: 0.001)")
 
 # Maximum number of epochs for training
-parser.add_argument('--max-epochs', type=int, default=1000, help="Maximum number of epochs for training the model (default: 200)")
+parser.add_argument('--max-epochs', type=int, default=200, help="Maximum number of epochs for training the model (default: 200)")
 
 # Batch size for training
 parser.add_argument('--batch-size', type=int, default=256, help="Batch size for training, controlling the number of samples per gradient update (default: 256)")
@@ -52,6 +52,10 @@ parser.add_argument('--spectral-emb-dim', type=int, default=10, help="Dimensiona
 
 # Number of conditions used in conditional vector (number of properties)
 parser.add_argument('--n-condition', type=int, default=7, help="Number of distinct condition properties used in conditional vector (default: 7)")
+
+# Beta value for the VAE loss
+parser.add_argument('--beta', type=float, default=0.05, help="Beta value for the VAE loss (default: 1.0)")
+
 
 args = parser.parse_args()
 
@@ -97,7 +101,7 @@ for epoch in range(args.max_epochs):
     for data in train_loader:
         data = data.to(device)
         optimizer.zero_grad()
-        loss, recon_loss, kl_loss = cvgae.loss_function(data, beta = beta)
+        loss, recon_loss, kl_loss = cvgae.loss_function(data, beta = args.beta)
         loss.backward()
         optimizer.step()
         train_loss += loss.item()
@@ -134,6 +138,8 @@ for epoch in range(args.max_epochs):
 
     if valid_loss < best_val_loss:
         best_val_loss = valid_loss
+        if os.path.exists("models") == False:
+            os.makedirs("models")
         torch.save({
             'state_dict': cvgae.state_dict(),
             'optimizer' : optimizer.state_dict(),
@@ -147,15 +153,32 @@ plt.figure(figsize=(10, 5))
 plt.title('Training and Validation Losses')
 plt.xlabel('Epochs')
 plt.ylabel('Loss')
-
 plt.plot(train_losses, label='Training loss', color='blue')
-plt.plot(train_recon_losses, label='Training reconstruction loss', color = 'blue', linestyle='dashed')
-plt.plot(train_kl_losses, label='Training KL loss', color = 'blue', linestyle='dotted')
 plt.plot(valid_losses, label='Validation loss', color = 'red')
-plt.plot(valid_recon_losses, label='Validation reconstruction loss', color = 'red', linestyle='dashed')
-plt.plot(valid_kl_losses, label='Validation KL loss', color = 'red', linestyle='dotted')
-
 plt.legend()
-
 plt.savefig('plots/CVGAE_losses.png')
-plt.show()
+
+
+plt.figure(figsize=(10, 5))
+plt.title('Training and Validation Losses')
+plt.xlabel('Epochs')
+plt.ylabel('Loss')
+plt.plot(train_recon_losses, label='Training reconstruction loss', color = 'blue')
+plt.plot(valid_recon_losses, label='Validation reconstruction loss', color = 'red')
+plt.legend()
+plt.savefig('plots/CVGAE_recon_losses.png')
+
+
+plt.figure(figsize=(10, 5))
+plt.title('Training and Validation Losses')
+plt.xlabel('Epochs')
+plt.ylabel('Loss')
+plt.plot(train_kl_losses, label='Training KL loss', color = 'blue')
+plt.plot(valid_kl_losses, label='Validation KL loss', color = 'red')
+plt.legend()
+plt.savefig('plots/CVGAE_kl_losses.png')
+
+
+
+
+

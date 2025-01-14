@@ -2,9 +2,11 @@ from torch_geometric.loader import DataLoader
 import torch
 import csv
 import argparse
+import os
 
 from model.cvae import CVGAE
 from utils.data_processing import preprocess_dataset, construct_nx_from_adj, get_stats_mean_std
+from utils.eval import read_output, MAE
 
 ###############################################################################
 
@@ -55,13 +57,14 @@ test_loader = DataLoader(testset, batch_size=args.batch_size, shuffle=False)
 stats_mean, stats_std = get_stats_mean_std(trainset)
 
 cvgae = CVGAE(args.spectral_emb_dim+1, args.hidden_dim_encoder, args.hidden_dim_decoder, args.latent_dim, args.n_layers_encoder, args.n_layers_decoder, args.n_max_nodes, args.n_condition, stats_mean, stats_std).to(device)
-checkpoint = torch.load('./models/autoencoder.pth.tar')
+checkpoint = torch.load('./models/cvgae.pth.tar')
 cvgae.load_state_dict(checkpoint['state_dict'])
 cvgae.eval()
 
+if os.path.exists("outputs") == False:
+    os.makedirs("outputs")
 
-
-with open("/outputs/output_CVGAE.csv", "w", newline="") as csvfile:
+with open("outputs/output_CVGAE.csv", "w", newline="") as csvfile:
     writer = csv.writer(csvfile)
     writer.writerow(["graph_id", "edge_list"])
 
@@ -86,3 +89,8 @@ with open("/outputs/output_CVGAE.csv", "w", newline="") as csvfile:
             edge_list_text = ", ".join([f"({u}, {v})" for u, v in Gs_generated.edges()])           
             # Write the graph ID and the full edge list as a single row
             writer.writerow([graph_id, edge_list_text])
+
+
+Gs = read_output("outputs/output_CVGAE.csv")
+mae = MAE(Gs, testset)
+print(f"Mean absolute error of graph features: {mae:.2f}")

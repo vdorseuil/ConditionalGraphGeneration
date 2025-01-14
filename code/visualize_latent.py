@@ -44,4 +44,4 @@ model.eval()
 if os.path.exists("visuals") == False:
     os.makedirs("visuals")
 
-plot_latent(model, dataset, args.cond_idx, dim1 = 0, dim1 = 1, save_path = "visuals/latent_CVGAE.png")
+plot_latent(model, args.model_type, dataset, args.cond_idx, dim1 = 0, dim2 = 1, save_path = f"visuals/latent_{args.model_type}_{args.cond_idx}.png")
