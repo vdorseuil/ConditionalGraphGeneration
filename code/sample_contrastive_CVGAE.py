@@ -1,14 +1,15 @@
-from torch_geometric.loader import DataLoader
-import torch
-import csv
 import argparse
+import csv
 import os
-import numpy as np
-from tqdm import tqdm
 
+import numpy as np
+import torch
 from model.contrastive_cvae import ContrastiveCVGAE
-from utils.data_processing import preprocess_dataset, construct_nx_from_adj, get_stats_mean_std
-from utils.eval import read_output, MAE, calculate_stats_graph
+from torch_geometric.loader import DataLoader
+from tqdm import tqdm
+from utils.data_processing import (construct_nx_from_adj, get_stats_mean_std,
+                                   preprocess_dataset)
+from utils.eval import MAE, calculate_stats_graph, read_output
 
 ###############################################################################
 

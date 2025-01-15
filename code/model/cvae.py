@@ -1,8 +1,7 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-
-from model.autoencoder import Decoder, GIN
+from model.autoencoder import GIN, Decoder
 
 
 class CVGAE(nn.Module):

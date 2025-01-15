@@ -1,8 +1,9 @@
+import ast
+import csv
+
+import community as community_louvain
 import networkx as nx
 import numpy as np
-import csv
-import community as community_louvain
-import ast
 
 
 def calculate_stats_graph(G):

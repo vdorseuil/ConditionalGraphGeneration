@@ -1,6 +1,8 @@
 import os
 import random
+
 import networkx as nx
+
 
 def generate_permuted_graphs(
     input_edge_file: str,

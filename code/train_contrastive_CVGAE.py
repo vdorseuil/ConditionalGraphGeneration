@@ -1,13 +1,12 @@
 import argparse
-import matplotlib.pyplot as plt
-import torch
-from torch_geometric.loader import DataLoader
-import numpy as np
-
-from model.contrastive_cvae import ContrastiveCVGAE
-from utils.data_processing import preprocess_dataset, get_stats_mean_std
-
 import os
+
+import matplotlib.pyplot as plt
+import numpy as np
+import torch
+from model.contrastive_cvae import ContrastiveCVGAE
+from torch_geometric.loader import DataLoader
+from utils.data_processing import get_stats_mean_std, preprocess_dataset
 
 ###############################################################################
 

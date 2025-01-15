@@ -1,9 +1,10 @@
 import os
-import torch
+
 import networkx as nx
 import numpy as np
-import torch.nn.functional as F
 import scipy.sparse as sparse
+import torch
+import torch.nn.functional as F
 from torch_geometric.data import Data
 from tqdm import tqdm
 from utils.extract_feats import extract_feats, extract_numbers

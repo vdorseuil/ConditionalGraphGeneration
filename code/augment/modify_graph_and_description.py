@@ -1,6 +1,7 @@
-import networkx as nx
-import random
 import os
+import random
+
+import networkx as nx
 from parse_and_rewrite_description import parse_and_rewrite_description
 
 

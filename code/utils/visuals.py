@@ -1,6 +1,5 @@
 import matplotlib.pyplot as plt
 import numpy as np
-
 import torch
 
 condition_names = ['n_nodes', 'n_edges', 'avg_degree', 'n_triangles', 'global_clustering_coeff', 'max_k_core', 'n_communities']

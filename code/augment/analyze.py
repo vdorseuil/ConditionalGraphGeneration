@@ -1,9 +1,11 @@
 import os
 import re
+
+import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
-import matplotlib.pyplot as plt
 from sklearn.decomposition import PCA
+
 
 ###############################################################################
 # 1. PARSING THE 7 NUMERICAL VALUES (placeholder)

@@ -1,5 +1,6 @@
 import torch
 
+
 def cosine_beta_schedule(timesteps, s=0.008):
     """
     cosine schedule as proposed in https://arxiv.org/abs/2102.09672

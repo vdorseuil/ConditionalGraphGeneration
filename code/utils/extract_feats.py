@@ -1,5 +1,6 @@
 import re
 
+
 def extract_numbers(text):
     # Use regular expression to find integers and floats
     numbers = re.findall(r'\d+\.\d+|\d+', text)

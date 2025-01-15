@@ -1,5 +1,6 @@
 import re
 
+
 def parse_and_rewrite_description(
     input_description_str: str,
     new_values: list[float],

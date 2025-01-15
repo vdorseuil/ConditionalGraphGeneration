@@ -1,19 +1,16 @@
 import argparse
-
-import numpy as np
+import os
 from datetime import datetime
-import torch
+
 import matplotlib.pyplot as plt
-
+import numpy as np
+import torch
 import torch.nn.functional as F
-from torch_geometric.loader import DataLoader
-
 from model.autoencoder import VariationalAutoEncoder
 from model.denoise_model import DenoiseNN, p_losses
+from torch_geometric.loader import DataLoader
 from utils.data_processing import preprocess_dataset
 from utils.noise_schedules import linear_beta_schedule
-
-import os
 
 ###############################################################################
 

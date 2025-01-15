@@ -1,11 +1,12 @@
-from utils.visuals import plot_latent
-from utils.data_processing import preprocess_dataset, get_stats_mean_std
+import argparse
+import os
+
+import torch
 from model.autoencoder import VariationalAutoEncoder
 from model.contrastive_cvae import ContrastiveCVGAE
 from model.cvae import CVGAE
-import argparse
-import torch
-import os
+from utils.data_processing import get_stats_mean_std, preprocess_dataset
+from utils.visuals import plot_latent
 
 parser = argparse.ArgumentParser(description='LatentPlots')
 
