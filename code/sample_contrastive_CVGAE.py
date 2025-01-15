@@ -89,7 +89,7 @@ contrastive_cvgae.eval()
 if os.path.exists("outputs") == False:
     os.makedirs("outputs")
 
-with open("outputs/output_CVGAE.csv", "w", newline="") as csvfile:
+with open("outputs/output_contrastive_CVGAE.csv", "w", newline="") as csvfile:
     writer = csv.writer(csvfile)
     writer.writerow(["graph_id", "edge_list"])
 
