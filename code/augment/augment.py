@@ -6,7 +6,7 @@ from tqdm import tqdm
 
 if __name__ == "__main__":
     # 1. Base path
-    base_path = '/Users/theo/MVA/Altegrad/Final_project/altegrad_project'
+    base_path = ''
     
     # 2. Build subpaths for 'train' data
     graph_path = os.path.join(base_path, "data", "train", "graph")

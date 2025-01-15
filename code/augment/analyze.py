@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 from sklearn.decomposition import PCA
 
 ###############################################################################
-# 1. PARSING THE 7 NUMERICAL VALUES (placeholder)
+# 1. PARSING THE 7 NUMERICAL VALUES
 ###############################################################################
 def extract_7_numbers(description_str: str) -> list[float]:
     """
@@ -267,20 +267,17 @@ def analyze_differences(df_differences, fig_dir="fig_diff"):
 # 4. PUTTING IT ALL TOGETHER
 ###############################################################################
 if __name__ == "__main__":
-    # Example usage
-    base_path = "/users/eleves-b/2021/theo.molfessis/Desktop/altegrad_project/"
+    base_path = "/"
     folders = {
         "original": os.path.join(base_path, "data", "train", "description"),
         "add_edge": os.path.join(base_path, "data_augmented", "adding_edges", "description"),
         "add_triangle": os.path.join(base_path, "data_augmented", "adding_triangles", "description"),
          "add_nodes": os.path.join(base_path, "data_augmented", "adding_nodes", "description")
-        # Potentially more, e.g. "add_node": ...
     }
 
     df_all = collect_description_features(folders)
     print(f"Collected {len(df_all)} total rows across {df_all['data_type'].nunique()} data types.")
 
-    #analyze_distributions(df_all, fig_dir="fig")
     print("All plots generated!")
    
     df_diff = compute_differences(df_all)
