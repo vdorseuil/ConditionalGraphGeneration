@@ -47,12 +47,12 @@ pip install -r requirements.txt
 
 3. Train your model, CVGAE, NGG or ContrastiveCVGAE.
 ```python
-python code/train_NGG.py --max-epochs 200 --batch-size 256 --latent-dim 2
+python code/train_CVGAE.py --max-epochs 200 --batch-size 256 --latent-dim 2
 ```
 
 4. Sample graphs and look at the visuals
 ```python
-python code/sample_NGG.py --latent-dim 2 --n-sample 10
+python code/sample_CVGAE.py --latent-dim 2 --n-sample 10
 ```
 
 
