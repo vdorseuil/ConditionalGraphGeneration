@@ -38,18 +38,19 @@ We first introduce the baseline provided by the organizers of the competition an
 ```
 
 ## Setup Instructions
-Required python 3.8+
-1. Install the required packages
+1. Create a virtual environments with `cuda`or `pip`using python 3.11.3.
+
+2. Install the required packages
 ```
 pip install -r requirements.txt 
 ```
 
-2. Train your model, CVGAE, NGG or ContrastiveCVGAE.
+3. Train your model, CVGAE, NGG or ContrastiveCVGAE.
 ```python
 python code/train_NGG.py --max-epochs 200 --batch-size 256 --latent-dim 2
 ```
 
-3. Sample graphs and look at the visuals
+4. Sample graphs and look at the visuals
 ```python
 python code/sample_NGG.py --latent-dim 2 --n-sample 10
 ```
