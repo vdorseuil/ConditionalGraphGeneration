@@ -38,7 +38,7 @@ We first introduce the baseline provided by the organizers of the competition an
 ```
 
 ## Setup Instructions
-1. Create a virtual environments with `cuda`or `pip`using python 3.11.3.
+1. Create a virtual environments with `cuda`or `pip` using python 3.11.3.
 
 2. Install the required packages
 ```
